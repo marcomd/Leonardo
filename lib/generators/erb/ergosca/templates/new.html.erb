@@ -1,0 +1,6 @@
+<%% secondary_navigation({:value => link_to(t(:list), <%= plural_table_name %>_path)}, {:value => t(:add), :active => true}) %>
+
+<%% title t('attributes.<%= singular_table_name %>.op_new') %>
+
+<%%= render 'form' %>
+<!--<%%#= link_to t(:back), <%= index_helper %>_path %>-->

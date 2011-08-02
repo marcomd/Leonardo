@@ -1,0 +1,33 @@
+<%% secondary_navigation({:value => t(:list), :active => true}, {:value => link_to(t(:add), new_<%= singular_table_name %>_path)}) %>
+
+<%% title t('attributes.<%= singular_table_name %>.op_index') %>
+
+<%% remote = false %>
+<%%= form_for :<%= singular_table_name %>, :html => { :method => :get, :class => "form_ajax1", :id => "form_search" } do |f| %>
+<div class="filter-container">
+  <%- attributes.each do |attribute| -%>
+  <div class="filter-field">
+    <b><%%= f.label t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %></b><br />
+    <%- case attribute.type -%>
+    <%-	when :boolean -%>
+        <%%= radio_button("<%= singular_table_name %>", "<%= attribute.name %>", "1", {:checked => (@<%= singular_table_name %>.<%= attribute.name %>)}) %><%%= label_tag "<%= singular_table_name %>_<%= attribute.name %>_1", t(:yes) %><br />
+        <%%= radio_button("<%= singular_table_name %>", "<%= attribute.name %>", "0", {:checked => (!@<%= singular_table_name %>.<%= attribute.name %>)}) %><%%= label_tag "<%= singular_table_name %>_<%= attribute.name %>_0", t(:no) %><br />
+        <%%= radio_button("<%= singular_table_name %>", "<%= attribute.name %>", "") %><%%= label_tag "<%= singular_table_name %>_<%= attribute.name %>_", t(:all) %>
+    <%-	when :text -%>
+        <%%= f.text_field :<%= attribute.name %> %>
+    <%-	else -%>
+        <%%= f.<%= attribute.field_type %> :<%= attribute.name %> %>
+    <%- end -%>
+
+  </div>
+  <%- end -%>
+  <div style="clear:both;">
+      <%%= f.submit t(:search), {:class=>'button medium'} %>
+      <%%= f.submit 'Csv', {:class=>'button medium csv'} %>
+  </div>
+</div>
+<%% end %>
+
+<div id="list">
+    <%%= render 'list', :remote => remote %>
+</div>

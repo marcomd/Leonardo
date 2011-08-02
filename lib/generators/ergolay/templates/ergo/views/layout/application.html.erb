@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= "#{CONFIG[:application][:name]} #{controller.controller_name.capitalize}: #{controller.action_name}" %></title>
+    <%= stylesheet_link_tag    "application" %>
+    <%= javascript_include_tag "application" %>
+    <%= csrf_meta_tags %>
+    <%= yield(:head) %>
+  </head>
+  <body>
+    <%= render "layouts/#{CONFIG[:default_style]}" %>
+  </body>
+</html>

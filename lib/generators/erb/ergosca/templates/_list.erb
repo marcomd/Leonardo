@@ -1,0 +1,36 @@
+<%%= paginate @<%= plural_table_name %>, :remote => remote %>
+<div class="separator"></div>
+
+<table class='user' cellspacing='0'>
+  <thead>
+  <tr>
+<%- attributes.each do |attribute| -%>
+    <th><%%= t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %></th>
+<%- end -%>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+<%% @<%= plural_table_name %>.each do |<%= singular_table_name %>| %>
+  <tr>
+<%- attributes.each do |attribute| -%>
+    <%- case attribute.type
+    when :boolean -%>
+    <td><%%= <%= singular_table_name %>.<%= attribute.name %> ? style_image_tag("ico_v.png") : style_image_tag('ico_x.png') %></td>
+    <%-	else -%>
+    <td><%%= <%= singular_table_name %>.<%= attribute.name %> %></td>
+    <%- end -%>
+<%- end -%>
+    <td><%%= link_to t(:show), <%= singular_table_name %> %></td>
+    <td><%%= link_to t(:edit), edit_<%= singular_table_name %>_path(<%= singular_table_name %>) %></td>
+    <td><%%= link_to t(:destroy), <%= singular_table_name %>, <%= key_value :confirm, "t(:sure?)" %>, <%= key_value :method, ":delete" %> %></td>
+  </tr>
+<%% end %>
+  </tbody>
+</table>
+
+<div class="separator"></div>
+<%%= paginate @<%= plural_table_name %>, :remote => remote %>
+<!--<%%#= link_to t('attributes.<%#= singular_table_name %>.op_new'), new_<%#= singular_table_name %>_path %>-->

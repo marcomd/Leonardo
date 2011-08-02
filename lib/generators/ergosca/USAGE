@@ -1,0 +1,23 @@
+Description:
+    en: Copy all templates in the project directory lib \ generators to allow customization.
+    it: Copia tutti i template nella directory del progetto lib\generators per consentire la personalizzazione.
+
+Example:
+    rails generate ergolsca:install
+
+This will create:
+    lib/generators/erb/ergosca/USAGE
+    lib/generators/erb/ergosca/ergosca_generator.rb
+    lib/generators/erb/ergosca/templates/_form.html.erb
+    lib/generators/erb/ergosca/templates/_list.erb
+    lib/generators/erb/ergosca/templates/edit.html.erb
+    lib/generators/erb/ergosca/templates/index.html.erb
+    lib/generators/erb/ergosca/templates/index.js.erb
+    lib/generators/erb/ergosca/templates/new.html.erb
+    lib/generators/erb/ergosca/templates/show.html.erb
+    lib/generators/rails/ergosca/USAGE
+    lib/generators/rails/ergosca/ergosca_generator.rb
+    lib/generators/rails/ergosca/templates/ergosca.css
+    lib/generators/rails/ergosca_controller/USAGE
+    lib/generators/rails/ergosca_controller/ergosca_controller_generator.rb
+    lib/generators/rails/ergosca_controller/templates/controller.rb

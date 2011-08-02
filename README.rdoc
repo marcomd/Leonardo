@@ -1,0 +1,33 @@
+= Ergolay Generators
+
+A collection of useful generator scripts for scaffolding and layout files. Available for Rails 3.1+
+
+
+== Install
+
+  gem install ergolay
+
+
+== Usage
+
+Once you install the gem, the generators will be available to all Rails applications on your system.
+
+To run the generator, go to your rails project directory and call it using rails generate or destroy command:
+
+rails g ergolay
+or
+rails destroy ergolay
+
+For more information about usage:
+
+rails g ergolay --help
+
+
+== Found a bug?
+
+If you are having a problem please submit an issue at m.mastrodonato@gmail.com
+
+
+== Rails 2 and Rails 3.0.x
+
+This Generators does not work with versions earlier 3.1
