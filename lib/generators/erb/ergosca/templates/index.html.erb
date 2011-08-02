@@ -3,7 +3,7 @@
 <%% title t('attributes.<%= singular_table_name %>.op_index') %>
 
 <%% remote = false %>
-<%%= form_for :<%= singular_table_name %>, :html => { :method => :get, :class => "form_ajax1", :id => "form_search" } do |f| %>
+<%%= form_for :<%= singular_table_name %>, :remote => remote, :html => { :method => :get, :class => "form_ajax1", :id => "form_search" } do |f| %>
 <div class="filter-container">
   <%- attributes.each do |attribute| -%>
   <div class="filter-field">

@@ -1,6 +1,7 @@
 = Ergolay Generators
 
-A collection of useful generator scripts for scaffolding and layout files. Available for Rails 3.1+
+A layout and customized scaffold generator for Rails 3.1
+Generate a layout using the ERGO Insurance Group\'s style, you can customize it or add your own. It also provides a customized scaffold to generates cool sites ajax ready.
 
 
 == Install
@@ -14,13 +15,33 @@ Once you install the gem, the generators will be available to all Rails applicat
 
 To run the generator, go to your rails project directory and call it using rails generate or destroy command:
 
-rails g ergolay
-or
-rails destroy ergolay
+rails g ergolay or rails destroy ergolay
+rails g ergosca or rails destroy ergosca
+
+You could also customize it, run:
+rails g ergosca:install
+
+Then you go into lib\generators\erb to change erb views like with original scaffold
+and into lib\generators\rails if you want to customize more.
+
 
 For more information about usage:
 
 rails g ergolay --help
+rails g ergosca --help
+
+
+=== Example:
+
+rails generate ergolay
+rails generate ergolay --main_color=#c8c8c8
+rails generate ergolay layout1 --main_color=rgb(200,150,200) --second-color=yellow
+rails generate ergolay layout2 --skip-pagination --skip-authentication --skip-authorization
+
+
+=== Available layout
+
+ * ergo [default]
 
 
 == Found a bug?

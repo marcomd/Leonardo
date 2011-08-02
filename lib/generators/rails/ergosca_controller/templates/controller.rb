@@ -33,7 +33,7 @@ class <%= controller_class_name %>Controller < ApplicationController
     request.format = :csv if params[:commit] == 'Csv'
     
     @<%= plural_table_name %> = case request.format
-    when 'text/html'
+    when 'text/html', 'text/javascript'
       <%= class_name %>.where(conditions).order(:id).page(params[:page])
     else
       <%= class_name %>.where(conditions)
@@ -42,14 +42,15 @@ class <%= controller_class_name %>Controller < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.json { render <%= key_value :json, "@#{plural_table_name}" %> }
-      format.csv {
+      format.csv do
         send_data(Utility::export(:collection => @<%= plural_table_name %>,
                   #:column => [:column_name ],
                   :i18n => true
                   ),
           :type => 'text/csv; charset=utf-8; header=present',
           :filename => "<%=CONFIG[:application][:name]%>_#{t('models.<%= plural_table_name %>')}_#{Time.now.strftime("%Y%m%d")}.csv")
-      }
+      end
+      format.js
     end
   end
 
