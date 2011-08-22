@@ -1,7 +1,7 @@
 = Leolay Generators
 
 A layout and customized scaffold generator for Rails 3.1
-Generate a layout using the ERGO Insurance Group\'s style, you can customize it or add your own. It also provides a customized scaffold to generates cool sites ajax ready.
+A generator for creating Rails 3.1 applications ready to go. It generates the layout, the style, the internationalization and manage external gems for authentication, authorization and other. It also provides a customized scaffold to generates cool sites ajax ready in few minutes. If you find a bug please report to m.mastrodonato@gmail.com
 
 
 == Install
@@ -19,7 +19,7 @@ To run the generator, go to your rails project directory and call it using rails
 rails g leolay or rails destroy leolay
 rails g leosca or rails destroy leosca
 
-PS:  Ergosca destroy do not remove variables parts like the attributes inserted into i18n yaml
+PS:  leosca destroy do not remove variables parts like the attributes inserted into i18n yaml
 PPS: You can run it more times and right like scaffold, is smart and won't generate tons of identical code
 
 === Step by step
@@ -102,7 +102,7 @@ PS: Of course, these options are in addition to those provided by the original s
 
 === Available layout
 
- * ergo [default]
+ * cloudy [default]
 
 
 == Found a bug?
