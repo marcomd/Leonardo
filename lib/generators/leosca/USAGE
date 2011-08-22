@@ -1,0 +1,23 @@
+Description:
+    en: Copy all templates in the project directory lib \ generators to allow customization.
+    it: Copia tutti i template nella directory del progetto lib\generators per consentire la personalizzazione.
+
+Example:
+    rails generate leosca:install
+
+This will create:
+    lib/generators/erb/leosca/USAGE
+    lib/generators/erb/leosca/leosca_generator.rb
+    lib/generators/erb/leosca/templates/_form.html.erb
+    lib/generators/erb/leosca/templates/_list.erb
+    lib/generators/erb/leosca/templates/edit.html.erb
+    lib/generators/erb/leosca/templates/index.html.erb
+    lib/generators/erb/leosca/templates/index.js.erb
+    lib/generators/erb/leosca/templates/new.html.erb
+    lib/generators/erb/leosca/templates/show.html.erb
+    lib/generators/rails/leosca/USAGE
+    lib/generators/rails/leosca/leosca_generator.rb
+    lib/generators/rails/leosca/templates/leosca.css
+    lib/generators/rails/leosca_controller/USAGE
+    lib/generators/rails/leosca_controller/leosca_controller_generator.rb
+    lib/generators/rails/leosca_controller/templates/controller.rb

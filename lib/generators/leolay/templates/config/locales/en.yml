@@ -1,0 +1,79 @@
+en:
+  date:
+    formats:
+      default: "%d-%m-%Y"
+      short: "%d %b"
+      long: "%d %B %Y"
+      only_day: "%e"
+    order: [ :day, :month, :year ]
+  activerecord: &activerecord
+    models: &models
+    attributes: &attributes
+      id: "Id"
+      created_at: "Created at"
+      updated_at: "Updated at"
+      #Attributes zone - do not remove
+    helpers:
+      submit:
+        create: "Create %{model}"
+        update: "Update %{model}"
+  formtastic:
+    titles:
+    labels:
+      <<: *attributes
+    hints:
+    actions: &actions
+      create: "Create my %{model}"
+      update: "Save changes"
+  authentication:
+    sign_in: "Sign in"
+    sign_in_with: "Sign in with"
+    sign_out: "Sign out"
+    sign_up: "Sign up"
+    signed_in_as: "Signed in as"
+    not_you: "Not you?"
+    remember_me: "Remember me"
+    password_confirmation: "Password confirmation"
+    forgot_password?: "Forgot your password?"
+    didnt_receive_confirmation_instruction?: "Didn't receive confirmation instructions?"
+    didnt_receive_unlock_instruction?: "Didn't receive unlock instructions?"
+    cancel_my_account: "Cancel my account"
+    send_me_reset_password_instruction: "Send me reset password instructions"
+    change_password: "Change password"
+    current_password: "Current password"
+    new_password: "New password"
+
+  unknown_request: "Sorry, this request is unkown and cannot be processed"
+  generic_error: "An error was occured and doesn't permit to execute this operation"
+  permission_denied: "You don't have authorization to perform this request."
+  created: "%{model} was successfully created."
+  created_ko: "An error prohibited %{model} to be created."
+  updated: "%{model} was successfully updated."
+  updated_ko: "An error prohibited %{model} to be updated."
+  deleted: "%{model} was successfully deleted."
+
+  <<: *activerecord
+  <<: *actions
+
+  list: "List"
+  save: "Save"
+  create: "Create"
+  update: "Update"
+  edit: "Edit"
+  delete: "Delete"
+  destroy: "Destroy"
+  new: "New"
+  copy: "Copy"
+  back: "Back"
+  back_to_list: "Back to List"
+  show: "Show"
+  show_all: "Show all"
+  sure?: "Are you sure?"
+  add: "Add"
+  create: "Create"
+  update: "Update"
+  search: "Search"
+  radio-yes: "Yes"
+  radio-no: "No"
+  radio-all: "All"
+  choose_language: "Choose language"

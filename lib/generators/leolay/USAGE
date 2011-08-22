@@ -1,0 +1,21 @@
+Description:
+    A layout and customized scaffold generator for Rails 3.1
+
+Rails version supported:
+    3.1
+
+Available layout:
+    ergo [default]
+
+Example:
+    rails generate leolay
+    rails generate leolay --main_color=#c8c8c8
+    rails generate leolay layout1 --main_color=rgb(200,150,200) --second-color=yellow
+    rails generate leolay layout2 --skip-pagination --skip-authentication --skip-authorization
+
+Will be:
+    Created an application layout with a nice and dynamic stylesheet based on sass
+    Customized views (only erb atm) and controller ajax ready and filters based on attributes, i18n messages ecc.
+    Customized application.rb to exclude javascript and stylesheet for every resource you will create
+    Customized application controller to manage i18n and others stuff like authentication, authorization ecc [optionals]
+    Created customized partials for pagination with kaminari [optional]

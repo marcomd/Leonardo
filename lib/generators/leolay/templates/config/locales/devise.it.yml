@@ -1,0 +1,51 @@
+it:
+  errors:
+    messages:
+      expired: "è scaduto ed è necessario richiederne uno nuovo"
+      not_found: "non trovato"
+      already_confirmed: "è già stato confermato, riprova a collegarti"
+      not_locked: "non era bloccato"
+      not_saved:
+        one: "un errore ha impedito il salvataggio di %{resource}:"
+        other: "%{count} errori hanno impedito il salvataggio di %{resource}:"
+
+  devise:
+    failure:
+      already_authenticated: "Sei già autenticato"
+      unauthenticated: "Devi accedere o registrarti per continuare."
+      unconfirmed: "Devi confermare il tuo account per continuare."
+      locked: "Il tuo account è bloccato."
+      invalid: "Indirizzo email o password non validi."
+      invalid_token: "Codice di autenticazione non valido."
+      timeout: "Sessione scaduta, accedere nuovamente per continuare."
+      inactive: "Il tuo account non è stato ancora attivato."
+    sessions:
+      signed_in: "Accesso effettuato con successo."
+      signed_out: "Sei uscito correttamente."
+    passwords:
+      send_instructions: "Riceverai un messaggio email con le istruzioni per reimpostare la tua password entro qualche minuto."
+      updated: "La tua password è stata cambiata. Ora sei collegato."
+      send_paranoid_instructions: "Se il tuo indirizzo e-mail esiste nel nostro database, riceverai un link per il recupero della password."
+    confirmations:
+      send_instructions: "Riceverai un messaggio email con le istruzioni per confermare il tuo account entro qualche minuto."
+      send_paranoid_instructions: "Se il tuo indirizzo e-mail esiste nel nostro database, fra pochi minuti riceverai un link con le istruzioni per confermare il tuo account."
+      confirmed: "Il tuo account è stato correttamente confermato. Ora sei collegato."
+    registrations:
+      signed_up: "Iscrizione correttamente eseguita."
+      inactive_signed_up: 'Ti sei registrato, ma non sei collegato perchè il tuo account è %{reason}.'
+      updated: "Il tuo account è stato aggiornato."
+      destroyed: "Arrivederci! L'account è stato cancellato. Speriamo di rivederti presto."
+    unlocks:
+      send_instructions: "Riceverai un messaggio email con le istruzioni per sbloccare il tuo account entro qualche minuto."
+      unlocked: "Il tuo account è stato correttamente sbloccato. Ora sei collegato."
+      send_paranoid_instructions: "Se il tuo indirizzo e-mail esiste nel nostro database, fra pochi minuti riceverai un link con le istruzioni per sbloccare il tuo account."
+    omniauth_callbacks:
+      success: "Sei stato autorizzato dall'account di %{kind}."
+      failure: 'Non siamo riusciti ad autoruzzarti da %{kind} perchè "%{reason}".'
+    mailer:
+      confirmation_instructions:
+        subject: "Istruzioni per la conferma"
+      reset_password_instructions:
+        subject: "Istruzioni per reimpostare la password"
+      unlock_instructions:
+        subject: "Istruzioni per sbloccare l'account"

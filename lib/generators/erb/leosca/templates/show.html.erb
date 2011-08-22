@@ -1,0 +1,13 @@
+<%% secondary_navigation({:value => link_to(t(:list),<%= plural_table_name %>_path)},
+                        ({:value => link_to(t(:add), new_<%= singular_table_name %>_path)}<%= " if can?(:create, @#{singular_table_name})" if authorization? %>),
+                        ({:value => link_to(t(:edit), edit_<%= singular_table_name %>_path(@<%= singular_table_name %>))}<%= " if can?(:update, @#{singular_table_name})" if authorization? %>),
+                        {:value => link_to(t(:show), @<%= singular_table_name %>), :active => true}
+)%>
+
+<% attributes.each do |attribute| -%>
+<p>
+  <b><%%= t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %>:</b>
+  <%%= @<%= singular_table_name %>.<%= attribute.name %> %>
+</p>
+
+<% end -%>

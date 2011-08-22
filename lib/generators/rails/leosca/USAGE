@@ -1,0 +1,41 @@
+Description:
+    en: Customized version of rails's scaffold, to be used after leolay.
+    it: Versione personalizzata dello scaffold di rails, da usare dopo leolay.
+
+    Scaffolds an entire resource, from model and migration to controller and
+    views, along with a full test suite. The resource is ready to use as a
+    starting point for your RESTful, resource-oriented application.
+
+    Pass the name of the model (in singular form), either CamelCased or
+    under_scored, as the first argument, and an optional list of attribute
+    pairs.
+
+    Attribute pairs are field:type arguments specifying the
+    model's attributes. Timestamps are added by default, so you don't have to
+    specify them by hand as 'created_at:datetime updated_at:datetime'.
+
+    You don't have to think up every attribute up front, but it helps to
+    sketch out a few so you can start working with the resource immediately.
+
+    For example, 'scaffold post title:string body:text published:boolean'
+    gives you a model with those three attributes, a controller that handles
+    the create/show/update/destroy, forms to create and edit your posts, and
+    an index that lists them all, as well as a resources :posts
+    declaration in config/routes.rb.
+
+    If you want to remove all the generated files, run
+    'rails destroy scaffold ModelName'.
+
+Use after leolay:
+    1. rails generate leolay
+    2. rails generate leosca
+
+Usage example:
+    rails generate leosca product name:string description:text active:boolean items:integer price:decimal
+
+    Available options:
+    rails generate leosca product name:string --skip-remote       => if you do not want ajax
+    rails generate leosca product name:string --skip-seeds
+    rails generate leosca product name:string --seeds=60          => if you need more records
+
+    Of course, these options are in addition to those provided by the original scaffold

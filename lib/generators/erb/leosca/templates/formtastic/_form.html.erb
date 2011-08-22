@@ -1,0 +1,10 @@
+<%%= semantic_form_for(@<%= singular_table_name %>) do |f| %>
+    <%%= f.inputs do %>
+    <% attributes.each do |attribute| -%>
+        <%%= f.input :<%= attribute.name %> %>
+    <% end -%>
+    <%% end %>
+    <%%= f.buttons do %>
+      <%%= f.commit_button :button_html => { :class => "button large" } %>
+    <%% end %>
+<%% end %>
