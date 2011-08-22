@@ -123,12 +123,17 @@ module Rails
           items = []
           attributes.each do |attribute|
             value = case attribute.type
-              when :boolean         then :true
-              when :integer         then "#"
-              when :float, :decimal then "#.46"
-              else                       "'#{attribute.name.capitalize}\#'"
+              when :boolean                 then :true
+              when :integer                 then "#"
+              when :float, :decimal         then "#.46"
+              when :references, :belongs_to then "#"
+              else                               "'#{attribute.name.capitalize}\#'"
             end
-            items << " :#{attribute.name} => #{value}"
+            name = case attribute.type
+              when :references, :belongs_to then ":#{attribute.name}_id"
+              else                               ":#{attribute.name}"
+            end
+            items << " #{name} => #{value}"
           end
           row = "{ #{items.join(', ')} }"
 

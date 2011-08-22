@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.version = "1.3.1"
   s.date = "2011-08-22"
   s.summary = "A layout and customized scaffold generator for Rails 3.1"
-  s.description = "I created a generator for creating Rails applications ready to go. It creates the layout, style, internationalization and manage external gems for authentication, authorization and continuing with all that your project will require. It also provides a customized scaffold to generates cool sites ajax ready in few minutes. If you find a bug please report to m.mastrodonato@gmail.com"
-  s.homepage = "http://github.com/marcomd/leonardo"
+  s.description = "A generator for creating Rails 3.1 applications ready to go. It generates the layout, the style, the internationalization and manage external gems for authentication, authorization and other. It also provides a customized scaffold to generates cool sites ajax ready in few minutes. If you find a bug please report to m.mastrodonato@gmail.com"
+  s.homepage = "http://github.com/marcomd/Leonardo"
   s.author = "Marco Mastrodonato"
   s.email = "m.mastrodonato@gmail.com"
   

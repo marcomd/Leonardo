@@ -1,4 +1,4 @@
-= Ergolay Generators
+= Leolay Generators
 
 A layout and customized scaffold generator for Rails 3.1
 Generate a layout using the ERGO Insurance Group\'s style, you can customize it or add your own. It also provides a customized scaffold to generates cool sites ajax ready.
@@ -6,7 +6,9 @@ Generate a layout using the ERGO Insurance Group\'s style, you can customize it 
 
 == Install
 
-  gem install ergolay
+  gem install leonardo
+
+
 
 
 == Usage
@@ -14,29 +16,88 @@ Generate a layout using the ERGO Insurance Group\'s style, you can customize it 
 Once you install the gem, the generators will be available to all Rails applications on your system.
 
 To run the generator, go to your rails project directory and call it using rails generate or destroy command:
+rails g leolay or rails destroy leolay
+rails g leosca or rails destroy leosca
 
-rails g ergolay or rails destroy ergolay
-rails g ergosca or rails destroy ergosca
+PS:  Ergosca destroy do not remove variables parts like the attributes inserted into i18n yaml
+PPS: You can run it more times and right like scaffold, is smart and won't generate tons of identical code
 
-You could also customize it, run:
-rails g ergosca:install
+=== Step by step
 
-Then you go into lib\generators\erb to change erb views like with original scaffold
-and into lib\generators\rails if you want to customize more.
+1. Firstly, create layout and initialize your project:
+rails new AppExample -m template.rb
+(You could find a template into gem root folder)
+
+there will be only a conflict on locales/en.yml which you can force
+
+Will be:
+* Created an application layout with a nice and dynamic stylesheet based on sass
+* Customized views (only erb atm) and controller ajax ready and filters based on attributes, i18n messages ecc.
+* Customized application.rb to exclude javascript and stylesheet for every resource you will create
+* Customized application controller to manage i18n and others stuff like authentication, authorization ecc [optionals]
+* Created customized partials for pagination with kaminari [optional]
+
+2. If you have used my template you have an application ready to work:
+run rails s and try it on localhost:3000
+if you choosed authentication you have to sign in, try with this different profile:
+ email: admin@AppExample.com, password: AppExample
+ [this profile can do everything]
+ or
+ email: manager@AppExample.com, password: AppExample
+ [can read, create and update]
+ or
+ email: user@AppExample.com, password: AppExample
+ [can read, create, update and destroy]
+
+Profile exists only if you choosed authorization as well.
+That are default and ready to be customized to suit your needs.
+
+3. Create your resource:
+rails g leosca product name:string description:text active:boolean items:integer price:decimal
+
+This will act as a normal scaffold more new stuff:
+* will be invoked new leosca_controller which is a customized scaffold_controller
+* customized views with new layout and ajax ready [set remote to true into index]
+* attributes will be insert into i18n files for fast translation
+* seeds will be created for you to populate new table
+
+4. Apply on db
+rake db:migrate
+rake db:seed
+
+READY!
+
+
+You could also customize it, copy under your project folder running:
+rails g leosca:install
+
+Then go to lib\generators\erb to change erb views like you would do with original scaffold
+go to lib\generators\rails if you want to customize more.
 
 
 For more information about usage:
 
-rails g ergolay --help
-rails g ergosca --help
+rails g leolay --help
+rails g leosca --help
 
 
 === Example:
 
-rails generate ergolay
-rails generate ergolay --main_color=#c8c8c8
-rails generate ergolay layout1 --main_color=rgb(200,150,200) --second-color=yellow
-rails generate ergolay layout2 --skip-pagination --skip-authentication --skip-authorization
+leolay:
+
+rails generate leolay
+rails generate leolay --main_color=#c8c8c8
+rails generate leolay layout1 --main_color=rgb(200,150,200) --second-color=yellow
+rails generate leolay layout2 --skip-pagination --skip-authentication --skip-authorization
+
+leosca:
+
+rails generate leosca product name:string
+rails generate leosca product name:string --skip-remote       => if you do not want ajax
+rails generate leosca product name:string --skip-seeds
+rails generate leosca product name:string --seeds=60          => if you need more records
+
+PS: Of course, these options are in addition to those provided by the original scaffold
 
 
 === Available layout

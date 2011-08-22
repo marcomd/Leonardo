@@ -1,3 +1,64 @@
+1.3.1 (August 22th, 2011) Marco Mastrodonato
+* Fixed csv name (to enable csv data export you have to set remote = false)
+* Fixed seeds creation when references fields are used
+
+
+
+1.3.0 (August 22th, 2011) Marco Mastrodonato
+* Add formtastic support and a new custom partial
+
+
+
+1.2.0 (August 4th, 2011) Marco Mastrodonato
+=== Bug Fix
+* Fixed the migration for users creation: authorizations were not set correctly
+* Sign out did not work: add method :delete
+* Fixed minor bugs
+
+=== Features
+* Updated partial session to have i18n labels
+* Add updated devise.it.yml
+* Add customized devise views with i18n management (to be continue). Devise generator is not required anymore until they update it
+
+
+
+
+1.1.1 (August 4th, 2011) Marco Mastrodonato
+* Fixed minor things
+* Improved cancan configuration
+* Added user and manager creation as well as admin
+* Improved documentation
+
+=== To do
+* Csv export does not work with ajax pagination
+* Improve ajax management to show, add and edit in the list view
+
+
+
+1.1.0 (August 3th, 2011) Marco Mastrodonato
+
+=== Bug Fix
+* Kaminari did not show pagination style
+* Minor fix for ajax code
+* Added Utility class i forgot to include
+
+=== Features
+* Added authorization management to support cancan
+* Improved authentication management to support warden/devise
+* Added seeds creation. You can avoid using --skip-seeds or change the default elements using --seeds_elements=60
+* Ajax is now the default and add option to skip --skip-remote (to enable/disable ajax set remote to true into index view)
+* Added destroy js template
+* Added localization management into application controller and use lang variable on url (ex: localhost:3000?lang=it)
+* Added class odd/even to tables tr
+
+
+
+1.0.0 (August 2th, 2011) Marco Mastrodonato
+
+* First stable release
+
+
+
 0.0.1 (July 27th, 2011) Marco Mastrodonato
 
 * Starting project
