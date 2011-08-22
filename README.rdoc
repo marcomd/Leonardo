@@ -8,7 +8,9 @@ A generator for creating Rails 3.1 applications ready to go. It generates the la
 
   gem install leonardo
 
-
+  or
+  
+  rails new NewApp -m http://cloud.github.com/downloads/marcomd/Leonardo/template.rb
 
 
 == Usage
@@ -25,8 +27,8 @@ PPS: You can run it more times and right like scaffold, is smart and won't gener
 === Step by step
 
 1. Firstly, create layout and initialize your project:
-rails new AppExample -m template.rb
-(You could find a template into gem root folder)
+rails new AppExample -m http://cloud.github.com/downloads/marcomd/Leonardo/template.rb
+(You can also find a template into gem root folder)
 
 there will be only a conflict on locales/en.yml which you can force
 
@@ -105,6 +107,12 @@ PS: Of course, these options are in addition to those provided by the original s
  * cloudy [default]
 
 
+== Tutorial
+
+http://mastrodonato.info/index.php/2011/08/leonardo-generatore-di-applicazioni-rails-3-1/
+
+
+
 == Found a bug?
 
 If you are having a problem please submit an issue at m.mastrodonato@gmail.com
@@ -113,3 +121,7 @@ If you are having a problem please submit an issue at m.mastrodonato@gmail.com
 == Rails 2 and Rails 3.0.x
 
 This Generators does not work with versions earlier 3.1
+
+
+
+
