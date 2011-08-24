@@ -14,8 +14,7 @@ module Rails
       class_option :seeds, :type => :boolean, :default => true, :description => "Create seeds to run with rake db:seed"
       class_option :seeds_elements, :type => :string, :default => "30", :description => "Choose seeds elements", :banner => "NUMBER OF ARRAY ELEMENTS"
       class_option :remote, :type => :boolean, :default => true, :description => "Enable ajax. You can also do later set remote to true into index view."
-      #class_option :authentication, :type => :boolean, :default => true, :description => "Add code to manage authentication with devise"
-      #class_option :authorization, :type => :boolean, :default => true, :description => "Add code to manage authorization with cancan"
+
 
       check_class_collision :suffix => "Controller"
 
@@ -47,7 +46,7 @@ module Rails
           inject_into_file file, :after => "#Attributes zone - do not remove#{CRLF}" do
             content = "      #{file_name}:#{CRLF}"
             attributes.each do |attribute|
-              content << "        #{attribute.name}: \"#{attribute.name.capitalize}\"#{CRLF}"
+              content << "        #{attribute.name}: \"#{camel_case attribute.name}\"#{CRLF}"
             end
             content << "        op_new: \"New #{singular_table_name}\"#{CRLF}"
             content << "        op_edit: \"Editing #{singular_table_name}\"#{CRLF}"
@@ -69,11 +68,15 @@ module Rails
             attributes.each do |attribute|
               case attribute.type
               when :integer, :decimal, :float
-                content << "        #{attribute.name}: \"Insert #{attribute.name} as #{attribute.type.to_s} number\"#{CRLF}"
+                content << "        #{attribute.name}: \"Fill the #{attribute.name} with a#{"n" if attribute.type == :integer} #{attribute.type.to_s} number\"#{CRLF}"
               when :boolean
                 content << "        #{attribute.name}: \"Select if #{attribute.name} or not\"#{CRLF}"
-              else
+              when :string, :text
                 content << "        #{attribute.name}: \"Choose a good #{attribute.name} for this #{file_name}\"#{CRLF}"
+              when :date, :datetime, :time
+                content << "        #{attribute.name}: \"Choose a #{attribute.type.to_s} for #{attribute.name}\"#{CRLF}"
+              else
+                content << "        #{attribute.name}: \"Choose a #{attribute.name}\"#{CRLF}"
               end
             end
             content
@@ -127,6 +130,9 @@ module Rails
               when :integer                 then "#"
               when :float, :decimal         then "#.46"
               when :references, :belongs_to then "#"
+              when :date                    then "'#{Time.now.strftime("%Y-%m-%d 00:00:00.000")}'"
+              when :datetime                then "'#{Time.now.strftime("%Y-%m-%d %H:%M:%S.000")}'"
+              when :time                    then "'#{Time.now.strftime("%H:%M:%S.000")}'"
               else                               "'#{attribute.name.capitalize}\#'"
             end
             name = case attribute.type
@@ -152,13 +158,13 @@ module Rails
         File.exists? "app/models/ability.rb"
       end
       def authentication?
-        file = "app/models/user.rb"
-        File.exists?(file)
-        #get file do |content|
-        #  content.include? "devise"
-        #end
+        return true if File.exists? "app/models/user.rb"
+        File.exists? "config/initializers/devise.rb"
       end
-
+      def camel_case(str)
+        return str if str !~ /_/ && str =~ /[A-Z]+.*/
+        str.split('_').map { |i| i.capitalize }.join
+      end
     end
   end
 end

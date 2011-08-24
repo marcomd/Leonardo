@@ -11,6 +11,7 @@ module Erb
       argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"
       class_option :authorization, :type => :boolean, :default => true, :description => "Add code to manage authorization with cancan"
       class_option :remote, :type => :boolean, :default => true, :description => "Enable ajax. You can also do later set remote to true into index view."
+      class_option :formtastic, :type => :boolean, :default => true, :description => "Create forms to manage with formtastic gem"
 
       def create_root_folder
         empty_directory File.join("app/views", controller_file_path)
@@ -63,11 +64,13 @@ module Erb
       def authorization?
         File.exists? "app/models/ability.rb"
       end
-
       def formtastic?
+        return false unless options.formtastic?
         File.exists? "config/initializers/formtastic.rb"
       end
-
+      def jquery_ui?
+        File.exists? "vendor/assets/javascripts/jquery-ui"
+      end
     end
   end
 end

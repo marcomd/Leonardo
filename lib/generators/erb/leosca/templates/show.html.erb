@@ -4,10 +4,22 @@
                         {:value => link_to(t(:show), @<%= singular_table_name %>), :active => true}
 )%>
 
+<table>
 <% attributes.each do |attribute| -%>
-<p>
-  <b><%%= t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %>:</b>
-  <%%= @<%= singular_table_name %>.<%= attribute.name %> %>
-</p>
-
+<tr>
+  <%- case attribute.type
+      when :boolean -%>
+    <td><b><%%= t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %>:</b></td>
+    <td><%%= @<%= singular_table_name %>.<%= attribute.name %> ? style_image_tag("ico_v.png") : style_image_tag('ico_x.png') %></td>
+  <%- when :references, :belongs_to -%>
+    <%% link_name = @<%= singular_table_name %>.<%= attribute.name %>.try(:name) || @<%= singular_table_name %>.<%= attribute.name %>.try(:id) %>
+    <td><b><%%= t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %>:</b></td>
+    <td><%%= link_to(link_name, @<%= singular_table_name %>.<%= attribute.name %> ) %></td>
+  <%- else -%>
+    <td><b><%%= t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %>:</b></td>
+    <td><%%= @<%= singular_table_name %>.<%= attribute.name %> %></td>
+  <%- end -%>
+</tr>
 <% end -%>
+</table>
+

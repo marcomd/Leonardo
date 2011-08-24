@@ -9,7 +9,7 @@
 <div class="filter-container">
   <%- attributes.each do |attribute| -%>
   <div class="filter-field">
-    <b><%%= f.label t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %></b><br />
+    <b><%%= f.label :<%= attribute.name %>, t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %></b><br />
     <%- case attribute.type -%>
     <%-	when :boolean -%>
         <%%= radio_button("<%= singular_table_name %>", "<%= attribute.name %>", "1", {:checked => (@<%= singular_table_name %>.<%= attribute.name %>)}) %><%%= label_tag "<%= singular_table_name %>_<%= attribute.name %>_1", t(:yes) %><br />
@@ -17,6 +17,8 @@
         <%%= radio_button("<%= singular_table_name %>", "<%= attribute.name %>", "") %><%%= label_tag "<%= singular_table_name %>_<%= attribute.name %>_", t(:all) %>
     <%-	when :text -%>
         <%%= f.text_field :<%= attribute.name %> %>
+    <%-	when :date -%>
+        <%%= f.text_field :<%= attribute.name %><%=", :class => \"calendar\"" if jquery_ui?%> %>
     <%-	else -%>
         <%%= f.<%= attribute.field_type %> :<%= attribute.name %> %>
     <%- end -%>

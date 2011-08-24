@@ -17,8 +17,11 @@
   <tr id="tr<%%= <%= singular_table_name %>.id %>" class="<%%= cycle("odd", "even")%>">
 <%- attributes.each do |attribute| -%>
     <%- case attribute.type
-    when :boolean -%>
+        when :boolean -%>
     <td><%%= <%= singular_table_name %>.<%= attribute.name %> ? style_image_tag("ico_v.png") : style_image_tag('ico_x.png') %></td>
+    <%- when :references, :belongs_to -%>
+    <%% link_name = <%= singular_table_name %>.<%= attribute.name %>.try(:name) || <%= singular_table_name %>.<%= attribute.name %>.try(:id) %>
+    <td><%%= link_to(link_name, <%= singular_table_name %>.<%= attribute.name %> ) %></td>
     <%-	else -%>
     <td><%%= <%= singular_table_name %>.<%= attribute.name %> %></td>
     <%- end -%>

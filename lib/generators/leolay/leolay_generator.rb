@@ -8,45 +8,64 @@ class LeolayGenerator < Rails::Generators::Base
   class_option :authorization, :type => :boolean, :default => true, :description => "Add code to manage authorization with cancan"
   class_option :user_class, :type => :boolean, :default => 'user', :description => "Set the user class name"
   class_option :formtastic, :type => :boolean, :default => true, :description => "Copy formtastic files into leosca custom folder (inside project)"
+  class_option :jquery_ui, :type => :boolean, :default => true, :description => "To use jQuery ui improvement"
 
 
   def generate_layout
     template "config.rb", "config/initializers/config.rb"
 
-    template "styles/#{style_name}/stylesheet.sass",
-             "app/assets/stylesheets/#{style_name}.sass"
+    template "styles/#{style_name}/stylesheet.sass", "app/assets/stylesheets/#{style_name}.sass"
 
     copy_file "layout_helper.rb", "app/helpers/layout_helper.rb"
 
     copy_file "styles/#{style_name}/views/layout/application.html.erb", "app/views/layouts/application.html.erb", :force => true
     template "styles/#{style_name}/views/layout/_layout.html.erb", "app/views/layouts/_#{style_name}.html.erb"
-              #{:authentication => options.authentication?,
-              #:authorization => options.authorization?}
     copy_file "styles/#{style_name}/views/layout/_message.html.erb", "app/views/application/_message.html.erb"
     copy_file "styles/#{style_name}/views/layout/_session.html.erb", "app/views/application/_session.html.erb" if options.authentication?
 
-    copy_file "config/locales/en.yml", "config/locales/en.yml"
-    copy_file "config/locales/it.yml", "config/locales/it.yml"
+    locale_path = "config/locales"
+    source_paths.each do |source_path|
+      files = Dir["#{source_path}/#{locale_path}/??.yml"]
+      files.each do |f|
+        copy_file f, "#{locale_path}/#{File.basename(f)}"
+      end
+      break if files.any?
+    end
 
     copy_file "lib/utility.rb", "lib/extras/utility.rb"
 
     if options.pagination?
-      copy_file "config/locales/kaminari.en.yml", "config/locales/kaminari.en.yml"
-      copy_file "config/locales/kaminari.it.yml", "config/locales/kaminari.it.yml"
+      source_paths.each do |source_path|
+        files = Dir["#{source_path}/#{locale_path}/kaminari.??.yml"]
+        files.each do |f|
+          copy_file f, "#{locale_path}/#{File.basename(f)}"
+        end
+        break if files.any?
+      end
 
-      copy_file "styles/#{style_name}/views/kaminari/_next_page.html.erb", "app/views/kaminari/_next_page.html.erb"
-      copy_file "styles/#{style_name}/views/kaminari/_page.html.erb", "app/views/kaminari/_page.html.erb"
-      copy_file "styles/#{style_name}/views/kaminari/_paginator.html.erb", "app/views/kaminari/_paginator.html.erb"
-      copy_file "styles/#{style_name}/views/kaminari/_prev_page.html.erb", "app/views/kaminari/_prev_page.html.erb"
+      #copy_file "styles/#{style_name}/views/kaminari/_next_page.html.erb", "app/views/kaminari/_next_page.html.erb"
+      #copy_file "styles/#{style_name}/views/kaminari/_page.html.erb", "app/views/kaminari/_page.html.erb"
+      #copy_file "styles/#{style_name}/views/kaminari/_paginator.html.erb", "app/views/kaminari/_paginator.html.erb"
+      #copy_file "styles/#{style_name}/views/kaminari/_prev_page.html.erb", "app/views/kaminari/_prev_page.html.erb"
+      directory "styles/#{style_name}/views/kaminari", "app/views/kaminari"
 
-      copy_file "styles/#{style_name}/images/kaminari/nav.png", "app/assets/images/styles/#{style_name}/kaminari/nav.png"
+
+      #copy_file "styles/#{style_name}/images/kaminari/nav.png", "app/assets/images/styles/#{style_name}/kaminari/nav.png"
+      directory "styles/#{style_name}/images/kaminari", "app/assets/images/styles/#{style_name}/kaminari"
     end
 
     directory "styles/#{style_name}/images/style", "app/assets/images/styles/#{style_name}"
 
+    directory "styles/#{style_name}/images/jquery-ui", "app/assets/images/styles/#{style_name}/jquery-ui" if options.jquery_ui?
+
     if options.authentication?
-      copy_file "config/locales/devise.en.yml", "config/locales/devise.en.yml"
-      copy_file "config/locales/devise.it.yml", "config/locales/devise.it.yml"
+      source_paths.each do |source_path|
+        files = Dir["#{source_path}/#{locale_path}/devise.??.yml"]
+        files.each do |f|
+          copy_file f, "#{locale_path}/#{File.basename(f)}"
+        end
+        break if files.any?
+      end
       directory "app/views/devise", "app/views/devise"
     end
   end
@@ -135,19 +154,19 @@ class LeolayGenerator < Rails::Generators::Base
   def create_admin_migration
     file = "db/migrate/*_create_admin.rb"
     return unless options.authentication? and Dir[file].empty?
-    file = file.sub('*', Time.now.strftime("%Y%m%d%H9999"))
+    file = file.sub('*', Time.now.strftime("%Y%m%d%H%M99"))
     create_file file do
       <<-FILE.gsub(/^      /, '')
       class CreateAdmin < ActiveRecord::Migration
         def self.up
           add_column :users, :roles_mask, :integer
-          user=User.new :email => 'admin@#{app_name}.com', :password => '#{app_name}', :password_confirmation => '#{app_name}'
+          user=User.new :email => 'admin@#{app_name}.com', :password => 'abcd1234', :password_confirmation => 'abcd1234'
           user.roles=['admin']
           user.save
-          user=User.new :email => 'manager@#{app_name}.com', :password => '#{app_name}', :password_confirmation => '#{app_name}'
+          user=User.new :email => 'manager@#{app_name}.com', :password => 'abcd1234', :password_confirmation => 'abcd1234'
           user.roles=['manager']
           user.save
-          user=User.new :email => 'user@#{app_name}.com', :password => '#{app_name}', :password_confirmation => '#{app_name}'
+          user=User.new :email => 'user@#{app_name}.com', :password => 'abcd1234', :password_confirmation => 'abcd1234'
           user.roles=['user']
           user.save
         end
@@ -160,20 +179,20 @@ class LeolayGenerator < Rails::Generators::Base
       end
       FILE
     end
+
   end
 
   def setup_formtastic
     return unless options.formtastic?
 
-    file = "app/assets/stylesheets/formtastic.css"
-    copy_file file, file
-    file = "app/assets/stylesheets/formtastic_changes.css"
+    path = "vendor/assets/stylesheets/formtastic"
+    file = "#{path}/formtastic.css"
+    copy_file file, file unless File.exists?(file)
+    file = "#{path}/formtastic_changes.css"
     copy_file file, file
 
-    #New version include custom partial _form
-    #file_source = "lib/templates/erb/scaffold/_form.html.erb"
-    #file_destination = "lib/templates/erb/leosca/_form.html.erb"
-    #copy_file file_source, file_destination if File.exists?(file_source) and not File.exists?(file_destination)
+    path = "vendor/assets/stylesheets/jquery-ui"
+    directory path, path
 
     file = "config/initializers/formtastic.rb"
     inject_into_file file, :after => "# Formtastic::SemanticFormBuilder.i18n_lookups_by_default = false" do
@@ -184,6 +203,91 @@ class LeolayGenerator < Rails::Generators::Base
     end if File.exists?(file)
   end
 
+  def setup_javascript
+    app_path = "app/assets/javascripts"
+    vendor_path = "vendor/assets/javascripts"
+
+    file = "#{app_path}/custom.js"
+    copy_file file, file
+
+    file = "#{vendor_path}/vendor.js"
+    copy_file file, file
+
+    file = "#{app_path}/application.js"
+    append_file file do
+      <<-FILE.gsub(/^      /, '')
+
+      //= require vendor
+      FILE
+    end
+
+    if options.jquery_ui?
+      file = "#{app_path}/custom.js"
+      append_file file do
+        <<-FILE.gsub(/^        /, '')
+
+        $(function (){
+          $('.calendar').datepicker();
+        });
+        FILE
+      end
+
+      file = "#{app_path}/application.js"
+      inject_into_file file, :after => "//= require jquery_ujs" do
+        <<-FILE.gsub(/^        /, '')
+
+        //= require jquery-ui
+        FILE
+      end
+
+      #files = Dir["#{vendor_path}/jquery-ui/jquery.ui.datepicker-??.js"]
+      #files.each do |f|
+      #  copy_file f, f
+      #end
+      directory "#{vendor_path}/jquery-ui", "#{vendor_path}/jquery-ui"
+
+      file = "#{vendor_path}/vendor.js"
+      append_file file do
+        <<-FILE.gsub(/^        /, '')
+
+        //= require_tree ./jquery-ui
+        FILE
+      end
+
+    end
+  end
+
+  def setup_stylesheets
+    app_path = "app/assets/stylesheets"
+    vendor_path = "vendor/assets/stylesheets"
+
+    file = "#{vendor_path}/vendor.css"
+    copy_file file, file
+
+    if options.jquery_ui?
+      file = "#{app_path}/application.css"
+      inject_into_file file, :before => "*/" do
+        <<-FILE.gsub(/^        /, '')
+         *= require vendor
+        FILE
+      end
+
+      file = "#{vendor_path}/vendor.css"
+      inject_into_file file, :before => "*/" do
+        <<-FILE.gsub(/^        /, '')
+         *= require_tree ./jquery-ui
+        FILE
+      end
+    end
+
+    file = "#{vendor_path}/vendor.css"
+    inject_into_file file, :before => "*/" do
+      <<-FILE.gsub(/^      /, '')
+       *= require_tree ./formtastic
+      FILE
+    end if options.formtastic?
+  end
+
   private
   def style_name
     style.underscore
@@ -192,4 +296,5 @@ class LeolayGenerator < Rails::Generators::Base
   def app_name
     File.basename(Dir.pwd)
   end
+
 end

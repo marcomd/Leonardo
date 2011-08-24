@@ -27,6 +27,8 @@ gem 'paperclip' if yes?("Attachment ?")
 
 gem 'fastercsv' if yes?("FasterCSV ?")
 
+gem 'state_machine' if yes?("Do you have to handle states ?")
+
 formtastic = yes?("Formtastic ?")
 if formtastic
   #gem 'justinfrench-formtastic', :lib => 'formtastic', :source => 'http://gems.github.com'
@@ -46,13 +48,13 @@ end
 model_name = nil
 devise = yes?("Would you like to install Devise?")
 if devise
-  gem("devise")
+  gem 'devise'
   model_name = ask(" What would you like the user model to be called? [user]")
   model_name = "user" if model_name.blank?
 end
 
 cancan = yes?("Authorization ?")
-gem "cancan" if cancan
+gem 'cancan' if cancan
 
 #home = yes?("Generate controller home ? (raccomanded)")
 home = true

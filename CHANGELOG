@@ -1,3 +1,18 @@
+1.4.0 (August 24th, 2011) Marco Mastrodonato
+* New file custom.js to fill with your javascripts and use application.js as manifest file
+* Two new files under vendor/assets folder: vendor.js and vendor.css to use as manifest file
+* Now you can skip formtastic also with leosca generator (leolay already could) and though if it is installed.
+* jQuery ui (1.8.16) support with a custom ligthness theme to combine with leonardo default style
+* Filter fields labels on index views now have id linked to own text field.
+* Remove underscore from fields labels on yaml i18n files.
+* Fields labels on _form partial now use i18n tags. Who used formastic didn't need it.
+* Now date use a text fields with calendar class for jquery ui calendar, if you chose it
+* The three users created by leolay (admin, manager and user) have now a new password: abcd1234
+* Association now generate a link to related object showing its name || id. These changes are in the _list and show which now use a table => will be changed with a tableless layout
+* Minor improvement
+
+
+
 1.3.1 (August 22th, 2011) Marco Mastrodonato
 * Fixed csv name (to enable csv data export you have to set remote = false)
 * Fixed seeds creation when references fields are used

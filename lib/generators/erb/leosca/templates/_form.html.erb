@@ -13,7 +13,7 @@
 
 <% attributes.each do |attribute| -%>
   <div class="field">
-    <%%= f.label :<%= attribute.name %> %><br />
+    <%%= f.label :<%= attribute.name %>, t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %><br />
     <%%= f.<%= attribute.field_type %> :<%= attribute.name %> %>
   </div>
 <% end -%>
