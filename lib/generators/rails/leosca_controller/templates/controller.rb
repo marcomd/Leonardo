@@ -1,43 +1,64 @@
 <% module_namespacing do -%>
 class <%= controller_class_name %>Controller < ApplicationController
-  <%= "before_filter :authenticate_user!" if authentication? %>
-  <%= "load_and_authorize_resource" if authorization? %>
+  <%= "before_filter :authenticate_user!#{CRLF}" if authentication? -%>
+  <%= "load_and_authorize_resource#{CRLF}" if authorization? -%>
+  <%= "before_filter :load_parents#{CRLF}" if nested? -%>
+
+<% if nested? -%>
+  def load_parents
+  <% base_parent_resources.each do |parent| -%>
+  @<%= parent %> = <%= parent.classify %>.find params[:<%= parent %>_id]
+  <% end -%>
+end
+<% end -%>
 
   # GET <%= route_url %>
   # GET <%= route_url %>.json
   def index
     @<%= singular_table_name %> = <%= orm_class.build(class_name) %>
-    conditions = nil
+    conditions_fields = []
+    conditions_values = []
+
+    <%- attributes.each do |attribute| -%>
+    <% if nested? && (attribute.type == :references || attribute.type == :belongs_to) -%>
+conditions_fields << "#{<%= class_name %>.table_name}.<%= base_parent_resources.last %>_id = ?"
+    conditions_values << @<%= base_parent_resources.last %>.id
+    <%- end -%>
+    <%- end -%>
 
     if params[:<%= singular_table_name %>]
-      request.format = :csv if params[:commit] == 'Csv'
-      conditions_fields = []
-      conditions_values = []
-
       <%- attributes.each do |attribute| -%>
-      if params[:<%= singular_table_name %>][:<%= attribute.name %>] && params[:<%= singular_table_name %>][:<%= attribute.name %>].length>0
-        <%- conditions_operator_sign = case attribute.type
-          when :string, :text then "LIKE"
-          else "="
-        end -%>
-        <%- conditions_operator_value = case attribute.type
-           when :string, :text then "%"
-           else ""
-        end -%>
-        conditions_fields << "#{<%= class_name %>.table_name}.<%= attribute.name %> <%= conditions_operator_sign %> ?"
-        conditions_values << "<%= conditions_operator_value %>#{params[:<%= singular_table_name %>][:<%= attribute.name %>]}<%= conditions_operator_value %>"
-        @<%= singular_table_name %>.<%= attribute.name %> = params[:<%= singular_table_name %>][:<%= attribute.name %>]
+      <%- attr_name = case attribute.type
+                 when :references, :belongs_to then "#{attribute.name}_id"
+                 else attribute.name
+              end -%>
+      <%- conditions_operator_sign = case attribute.type
+        when :string, :text then "LIKE"
+        else "="
+      end -%>
+      <%- conditions_operator_value = case attribute.type
+         when :string, :text then "%"
+         else ""
+      end -%>
+      <% unless nested? && (attribute.type == :references || attribute.type == :belongs_to) -%>
+
+      if params[:<%= singular_table_name %>][:<%= attr_name %>] && params[:<%= singular_table_name %>][:<%= attr_name %>].length>0
+        conditions_fields << "#{<%= class_name %>.table_name}.<%= attr_name %> <%= conditions_operator_sign %> ?"
+        conditions_values << "<%= conditions_operator_value %>#{params[:<%= singular_table_name %>][:<%= attr_name %>]}<%= conditions_operator_value %>"
+        @<%= singular_table_name %>.<%= attr_name %> = params[:<%= singular_table_name %>][:<%= attr_name %>]
       end
       <%- end -%>
+      <%- end -%>
 
-      conditions = conditions_fields.join(' and ').to_a + conditions_values
     end
+
+    conditions = conditions_fields.join(' and ').to_a + conditions_values
 
     request.format = :csv if params[:commit] == 'Csv'
     
     @<%= plural_table_name %> = case request.format
     when 'text/html', 'text/javascript'
-      <%= class_name %>.where(conditions).order(:id).page(params[:page])
+      <%= class_name %>.where(conditions).order(:id)<%= ".page(params[:page])" if pagination? %>
     else
       <%= class_name %>.where(conditions)
     end
@@ -65,6 +86,7 @@ class <%= controller_class_name %>Controller < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.json { render <%= key_value :json, "@#{singular_table_name}" %> }
+      format.js
     end
   end
 
@@ -72,6 +94,9 @@ class <%= controller_class_name %>Controller < ApplicationController
   # GET <%= route_url %>/new.json
   def new
     @<%= singular_table_name %> = <%= orm_class.build(class_name) %>
+    <%- if nested? -%>
+    @<%= singular_table_name %>.<%= last_parent %>_id = @<%= last_parent %>.id
+    <%- end -%>
 
     respond_to do |format|
       format.html # new.html.erb
@@ -88,10 +113,13 @@ class <%= controller_class_name %>Controller < ApplicationController
   # POST <%= route_url %>.json
   def create
     @<%= singular_table_name %> = <%= orm_class.build(class_name, "params[:#{singular_table_name}]") %>
+    <%- if nested? -%>
+    @<%= singular_table_name %>.<%= last_parent %>_id ||= @<%= last_parent %>.id
+    <%- end -%>
 
     respond_to do |format|
       if @<%= orm_instance.save %>
-        format.html { redirect_to @<%= singular_table_name %>, <%= key_value :notice, "I18n.t(:created, :model => I18n.t('models.#{singular_table_name}'))" %> }
+        format.html { redirect_to <%= show_resource_path("@") %>, <%= key_value :notice, "I18n.t(:created, :model => I18n.t('models.#{singular_table_name}'))" %> }
         format.json { render <%= key_value :json, "@#{singular_table_name}" %>, <%= key_value :status, ':created' %>, <%= key_value :location, "@#{singular_table_name}" %> }
       else
         format.html { render <%= key_value :action, '"new"' %> }
@@ -107,7 +135,7 @@ class <%= controller_class_name %>Controller < ApplicationController
 
     respond_to do |format|
       if @<%= orm_instance.update_attributes("params[:#{singular_table_name}]") %>
-        format.html { redirect_to @<%= singular_table_name %>, <%= key_value :notice, "I18n.t(:updated, :model => I18n.t('models.#{singular_table_name}'))" %> }
+        format.html { redirect_to <%= show_resource_path("@") %>, <%= key_value :notice, "I18n.t(:updated, :model => I18n.t('models.#{singular_table_name}'))" %> }
         format.json { head :ok }
       else
         format.html { render <%= key_value :action, '"edit"' %> }
@@ -123,7 +151,7 @@ class <%= controller_class_name %>Controller < ApplicationController
     @<%= orm_instance.destroy %>
 
     respond_to do |format|
-      format.html { redirect_to <%= index_helper %>_url }
+      format.html { redirect_to <%= list_resources_path %> }
       format.json { head :ok }
       format.js
     end

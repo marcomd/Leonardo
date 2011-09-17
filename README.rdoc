@@ -19,31 +19,32 @@ Once you install the gem, the generators will be available to all Rails applicat
 
 To run the generator, go to your rails project directory and call it using rails generate or destroy command:
 rails g leolay or rails destroy leolay
-rails g leosca or rails destroy leosca
+rails g leosca name [field:type] or rails destroy leosca name
 
 PS:  leosca destroy do not remove variables parts like the attributes inserted into i18n yaml
 
-PPS: You can run it more times and right like scaffold, is smart and won't generate tons of identical code
+PPS: You can run it more times and right like scaffold, won't generate tons of identical code. Thanks to thor which is smart.
 
 === Step by step
 
-1. Firstly, create layout and initialize your project:
+1) Firstly, create layout and initialize your project:
 rails new AppExample -m http://cloud.github.com/downloads/marcomd/Leonardo/template.rb
 (You can also find a template into gem root folder)
 
-Answer y for the gem you need.
+Answer y for the gem you need. I raccomended to use this gem with cancan, devise and rspec
 After the question will start generations.
 There will be a conflict on locales/en.yml which you must force if it is the first generation.
 
 Will be:
- * Created an application layout with a nice and dynamic stylesheet based on sass
- * Customized views (only erb atm) and controller ajax ready and filters based on attributes, i18n messages ecc.
- * Customized application.rb to exclude javascript and stylesheet for every resource you will create
- * Customized application controller to manage i18n and others stuff like authentication, authorization ecc [optionals]
- * Created customized partials for pagination with kaminari [optional]
- * Added jQuery-ui with a custom ligthness layout
+* Created an application layout with a nice and dynamic stylesheet based on sass
+* Customized views (only erb atm) and controller ajax ready and filters based on attributes, i18n messages ecc.
+* Customized application.rb to exclude javascript and stylesheet for every resource you will create
+* Customized application controller to manage i18n and others stuff like authentication, authorization ecc [optionals]
+* Created customized partials for pagination with kaminari [optional]
+* Added updated rspec into project folder ready to be customized
+* Added jQuery-ui with a custom ligthness layout (red and gray colors which suits to default style)
 
-2. If you have used my template you have an application ready to work:
+2) If you have used my template you have an application ready to work:
 run rails s and try it on http://localhost:3000
 if you chose authentication you have to sign in, try with this different profile:
 
@@ -56,21 +57,27 @@ if you chose authentication you have to sign in, try with this different profile
  email: user@AppExample.com, password: abcd1234
  [can read, create, update and destroy]
 
-Profile exists only if you chose authorization as well.
+Profiles exists only if you chose authorization as well.
 
-3. Create your resource:
-rails g leosca product name:string description:text active:boolean items:integer price:decimal
+3) Create your resources:
+rails g leosca category name:string
+rails g leosca product category:references name:string description:text active:boolean items:integer price:decimal --under=category 
+(add  --under=parent  if you need resource nested under another)
 
 This will act as a normal scaffold and has more new features:
- * will be invoked new leosca_controller which is a customized scaffold_controller
- * customized views with new layout and ajax ready (only destroy atm)
- * attributes will be insert into i18n files for a fast translation
- * seeds will be created for you to populate new table
- * ...and other stuff
+* will be invoked new leosca_controller which is a customized scaffold_controller
+* customized views with new layout and ajax ready (only pagination, show and destroy atm)
+* attributes will be insert into i18n files for a fast translation
+* seeds will be created for you to populate new table
+* updated specs with
+* ...and other stuff
 
-4. Apply to db
+4) Apply to db
 rake db:migrate
 rake db:seed
+
+5) All specs should be green, otherwise check if you did things right or if you chose particular combination not covered
+rake spec
 
 That's all!
 The new application is ready to be customized and to suit your needs.
@@ -83,14 +90,7 @@ Then go to lib\generators\erb to edit erb views like you would do with original 
 Go to lib\generators\rails if you want to customize more.
 
 
-For more information about usage:
-
- rails g leolay --help
-
- rails g leosca --help
-
-
-=== Example:
+=== Some examples:
 
 leolay:
 
@@ -102,21 +102,38 @@ leolay:
 leosca:
 
  rails generate leosca product name:string
- rails generate leosca product name:string --skip-remote       => if you do not want ajax
- rails generate leosca product name:string --skip-seeds
- rails generate leosca product name:string --seeds=60          => if you need more records
+ rails generate leosca product name:string --under=category  => if you want resource nested under another
+ rails generate leosca product name:string --skip-remote     => if you do not want ajax (you can also enable later)
 
 
 PS: Of course, these options are in addition to those provided by the original scaffold
+
+
+For more information about usage:
+
+ rails g leolay --help
+
+ rails g leosca --help
 
 
 === Available layout
 
  * cloudy [default]
 
+== Thanks to...
+
+* Ruby/Rails developers and to all those who make it possible to work with this comfort
+* Ryan Bates for cancan and for all his usefull screencasts
+* Justin French for his amazing formtastic
+* Daniel Neighman for warden. José Valim, Carlos Antônio da Silva and to every devise contributors
+* Jonas Nicklas for his capybara and to all others rspec and factorygirl contributors
+* To my wife, my children and their stuffed animals
+* Thanks to my boss who thinks I am working for him (if you are reading this, i am kiddind, i am working for you!!)
+
 
 == Tutorial
 
+(only italian at the moment)
 http://mastrodonato.info/index.php/2011/08/leonardo-generatore-di-applicazioni-rails-3-1/
 
 

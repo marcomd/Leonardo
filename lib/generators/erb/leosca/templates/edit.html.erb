@@ -1,11 +1,9 @@
-<%% secondary_navigation({:value => link_to(t(:list), <%= plural_table_name %>_path)},
-                        ({:value => link_to(t(:add), new_<%= singular_table_name %>_path)}<%= " if can?(:create, @#{singular_table_name})" if authorization? %>),
+<%% secondary_navigation({:value => link_to(t(:list), <%= list_resources_path %>)},
+                        ({:value => link_to(t(:add), <%= new_resource_path %>)}<%= " if can?(:create, @#{singular_table_name})" if authorization? %>),
                         {:value => t(:edit), :active => true},
-                        {:value => link_to(t(:show), @<%= singular_table_name %>)}
+                        {:value => link_to(t(:show), <%= show_resource_path("@") %>)}
 ) %>
 
 <%% title t('attributes.<%= singular_table_name %>.op_edit') %>
 
 <%%= render 'form' %>
-<!--<%%#= link_to t(:show), @<%= singular_table_name %> %> |-->
-<!--<%%#= link_to t(:back), <%= index_helper %>_path %>-->

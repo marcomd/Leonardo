@@ -51,7 +51,7 @@ en:
     currency:
       format:
         # Where is the currency sign? %u is the currency unit, %n the number (default: $5.00)
-        format: "%u%n"
+        format: "%u %n"
         unit: "$"
         # These five are to override number.format and are optional
         separator: "."
@@ -179,9 +179,9 @@ en:
       prompt: "Please select"
     # Default translation keys for submit FormHelper
     submit:
-      create: 'Create %{model}'
-      update: 'Update %{model}'
-      submit: 'Save %{model}'
+      create: "Create %{model}"
+      update: "Update %{model}"
+      submit: "Save %{model}"
 
   activerecord: &activerecord
     models: &models
@@ -220,7 +220,7 @@ en:
     current_password: "Current password"
     new_password: "New password"
 
-  unknown_request: "Sorry, this request is unkown and cannot be processed"
+  unknown_request: "Sorry, this request is unknown and cannot be processed"
   generic_error: "An error was occured and doesn't permit to execute this operation"
   permission_denied: "You don't have authorization to perform this request."
   created: "%{model} was successfully created."

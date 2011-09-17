@@ -1,7 +1,13 @@
-#This is a Rails 3.1.x template
-#Written by Marco Mastrodonato  27/07/2011
-#
-# USAGE: rails new yourapp -m template.rb
+#########################################################
+# 2011 Marco Mastrodonato(c)
+# This is a Rails 3.1 template to use with leonardo gem
+# https://rubygems.org/gems/leonardo
+# 
+# USAGE: rails new yourappname -m template.rb
+# 
+# -------------------------------------------------------
+# 25-08-2011: Added rspec generation
+#########################################################
 
 puts '*' * 40
 puts "* Processing template..."
@@ -21,7 +27,8 @@ if use_git
   EOS
 end
 
-gem 'kaminari' if yes?("Pagination ?")
+pagination = yes?("Pagination ?")
+gem 'kaminari' if pagination
 
 gem 'paperclip' if yes?("Attachment ?")
 
@@ -39,10 +46,13 @@ if formtastic
   gem 'validation_reflection'
 end
 
-if yes?("Add testing framework ?")
-  gem 'rspec-rails', :group => :test
+rspec = yes?("Add rspec as testing framework ?")
+if rspec
+  gem 'rspec-rails', :group => [:test, :development]
   gem 'capybara', :group => :test
   gem 'launchy', :group => :test
+  gem 'database_cleaner', :group => :test
+  gem 'factory_girl_rails', :group => :test
 end
 
 model_name = nil
@@ -60,7 +70,7 @@ gem 'cancan' if cancan
 home = true
 
 leolay = yes?("Layout ?")
-leolay_main_color = leolay_second_color = nil
+leolay_main_color = leolay_second_color = ""
 if leolay
   gem 'leonardo'
   puts " Enter colors, for example:"
@@ -70,6 +80,10 @@ if leolay
 end
 
 run "bundle install"
+
+generate "kaminari:config" if pagination
+
+generate "rspec:install" if rspec
 
 generate "formtastic:install" if formtastic
 
@@ -83,11 +97,12 @@ generate "cancan:ability" if cancan
 
 if leolay
   generate  "leolay",
-            (leolay_main_color && leolay_main_color.any? ? leolay_main_color : ""),
-            (leolay_second_color && leolay_second_color.any? ? leolay_second_color : ""),
+            "cloudy",
+            ("--main_color=#{leolay_main_color}" if leolay_main_color.any?),
+            ("--second_color=#{leolay_second_color}" if leolay_second_color.any?),
             (cancan ? "" : "--skip-authorization"),
             (devise ? "" : "--skip-authentication"),
-	          (formtastic ? "" : "--skip-formtastic")
+            (formtastic ? "" : "--skip-formtastic")
 end
 
 if home

@@ -1,4 +1,6 @@
+<%- if pagination? %>
 <%%= paginate @<%= plural_table_name %>, :remote => remote %>
+<%- end %>
 <div class="separator"></div>
 
 <table class='user' cellspacing='0'>
@@ -13,38 +15,33 @@
   </tr>
   </thead>
   <tbody>
-<%% @<%= plural_table_name %>.each do |<%= singular_table_name %>| %>
+<%% @<%= plural_table_name %>.each do |<%= singular_table_name %>| -%>
   <tr id="tr<%%= <%= singular_table_name %>.id %>" class="<%%= cycle("odd", "even")%>">
 <%- attributes.each do |attribute| -%>
-    <%- case attribute.type
-        when :boolean -%>
-    <td><%%= <%= singular_table_name %>.<%= attribute.name %> ? style_image_tag("ico_v.png") : style_image_tag('ico_x.png') %></td>
-    <%- when :references, :belongs_to -%>
-    <%% link_name = <%= singular_table_name %>.<%= attribute.name %>.try(:name) || <%= singular_table_name %>.<%= attribute.name %>.try(:id) %>
-    <td><%%= link_to(link_name, <%= singular_table_name %>.<%= attribute.name %> ) %></td>
-    <%-	else -%>
-    <td><%%= <%= singular_table_name %>.<%= attribute.name %> %></td>
-    <%- end -%>
+    <td><%= attribute_to_erb(attribute, singular_table_name) -%></td>
 <%- end -%>
-    <td><%%= link_to t(:show), <%= singular_table_name %> %></td>
-    <% if authorization? -%>
-    <%% if can? :update, <%= singular_table_name %> -%>
-    <% end -%>
-    <td><%%= link_to t(:edit), edit_<%= singular_table_name %>_path(<%= singular_table_name %>) %></td>
-    <% if authorization? -%>
-    <%% end -%>
-    <% end -%>
-    <% if authorization? -%>
-    <%% if can? :destroy, <%= singular_table_name %> -%>
-    <% end -%>
-    <td><%%= link_to t(:destroy), <%= singular_table_name %>, <%= key_value :confirm, "t(:sure?)" %>, <%= key_value :method, ":delete" %>, :remote => remote %></td>
-    <% if authorization? -%>
-    <%% end -%>
-    <% end -%>
+    <!-- Manage section, do not remove this tag -->
+    <td><%%= link_to t(:show), <%= show_resource_path %><%= ", :remote => remote" if jquery_ui? %> %></td>
+    <%- if authorization? -%>
+    <%%- if can? :update, <%= singular_table_name %> -%>
+    <%- end -%>
+    <td><%%= link_to t(:edit), <%= edit_resource_path %> %></td>
+    <%- if authorization? -%>
+    <%%- end -%>
+    <%- end -%>
+    <%- if authorization? -%>
+    <%%- if can? :destroy, <%= singular_table_name %> -%>
+    <%- end -%>
+    <td><%%= link_to t(:destroy), <%= destroy_resource_path %>, <%= key_value :confirm, "t(:sure?)" %>, <%= key_value :method, ":delete" %>, :remote => remote %></td>
+    <%- if authorization? -%>
+    <%%- end -%>
+    <%- end -%>
   </tr>
-<%% end %>
+<%% end -%>
   </tbody>
 </table>
 
 <div class="separator"></div>
+<%- if pagination? -%>
 <%%= paginate @<%= plural_table_name %>, :remote => remote %>
+<%- end -%>

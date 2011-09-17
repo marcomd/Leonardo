@@ -1,3 +1,26 @@
+1.6.0 (September 16th, 2011) Marco Mastrodonato
+* Nested resource: use new option rails g leosca product --under=category field:type
+* Improved views data format
+* Added ajax mode for show view managed by jquery-ui dialog
+* Updated specs for namespaced resource and other improvements
+* Several little improvements
+
+
+
+1.5.0 (September 6th, 2011) Marco Mastrodonato
+* Added Rspec support with requests to check ajax => All green if you use formtastic views (associations with select)
+* New template
+* Little improvements
+
+
+
+1.4.1 (August 25th, 2011) Marco Mastrodonato
+* Autocheck to exclude pagination from views and controller
+* Fixed the template.rb to generate rspec:install and added :development to group as well as :test. Now if you choose to use rspec, leosca will generate rspec test.
+* Added leolay:install to copy generator under project folder to be able to customize it like leosca:install
+
+
+
 1.4.0 (August 24th, 2011) Marco Mastrodonato
 * New file custom.js to fill with your javascripts and use application.js as manifest file
 * Two new files under vendor/assets folder: vendor.js and vendor.css to use as manifest file

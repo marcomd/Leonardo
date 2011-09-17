@@ -1,4 +1,4 @@
-<%%= form_for(@<%= singular_table_name %>) do |f| %>
+<%%= form_for(<%= form_resource_path %>) do |f| %>
   <%% if @<%= singular_table_name %>.errors.any? %>
     <div id="error_explanation">
       <h2><%%= pluralize(@<%= singular_table_name %>.errors.count, "error") %> prohibited this <%= singular_table_name %> from being saved:</h2>
@@ -11,12 +11,23 @@
     </div>
   <%% end %>
 
-<% attributes.each do |attribute| -%>
+<%- attributes.each do |attribute| -%>
   <div class="field">
     <%%= f.label :<%= attribute.name %>, t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %><br />
+    <%- case attribute.type
+        when :references, :belongs_to  -%>
+    <%% if @<%= singular_table_name %>.new_record? -%>
+        <%%= f.collection_select :<%= attribute.name %>_id, <%= attribute.name.classify %>.all, :id, :name, :prompt => true if can?(:manage, <%=class_name %>) %>
+    <%% else -%>
+        <%%= f.collection_select :<%= attribute.name %>_id, <%= attribute.name.classify %>.all, :id, :name, :prompt => true %>
+    <%% end -%>
+    <%-	when :date -%>
+    <%%= f.<%= attribute.field_type %> :<%= attribute.name %> <%=", :class => \"calendar\"" if jquery_ui?%> %>
+    <%-	else -%>
     <%%= f.<%= attribute.field_type %> :<%= attribute.name %> %>
+    <%- end -%>
   </div>
-<% end -%>
+<%- end -%>
   <div class="actions">
     <%%= f.submit :class => 'button large' %>
   </div>

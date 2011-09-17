@@ -1,0 +1,9 @@
+<table>
+<%- attributes.each do |attribute| -%>
+
+<tr>
+    <td><b><%%= t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %>:</b></td>
+    <td><%= attribute_to_erb(attribute, "@#{singular_table_name}") %></td>
+</tr>
+<%- end -%>
+</table>

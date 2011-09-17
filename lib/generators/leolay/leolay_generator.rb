@@ -1,20 +1,20 @@
 class LeolayGenerator < Rails::Generators::Base
   source_root File.expand_path('../templates', __FILE__)
   argument :style, :type => :string, :default => "cloudy"
-  class_option :pagination, :type => :boolean, :default => true, :description => "Include pagination files"
-  class_option :main_color, :type => :string, :default => nil, :description => "Force a main color for the stylesheet"
-  class_option :second_color, :type => :string, :default => nil, :description => "Force a secondary color for the stylesheet"
-  class_option :authentication, :type => :boolean, :default => true, :description => "Add code to manage authentication with devise"
-  class_option :authorization, :type => :boolean, :default => true, :description => "Add code to manage authorization with cancan"
-  class_option :user_class, :type => :boolean, :default => 'user', :description => "Set the user class name"
-  class_option :formtastic, :type => :boolean, :default => true, :description => "Copy formtastic files into leosca custom folder (inside project)"
-  class_option :jquery_ui, :type => :boolean, :default => true, :description => "To use jQuery ui improvement"
-
+  class_option :pagination, :type => :boolean, :default => true, :desc => "Include pagination files"
+  class_option :main_color, :type => :string, :default => nil, :desc => "Force a main color for the stylesheet"
+  class_option :second_color, :type => :string, :default => nil, :desc => "Force a secondary color for the stylesheet"
+  class_option :authentication, :type => :boolean, :default => true, :desc => "Add code to manage authentication with devise"
+  class_option :authorization, :type => :boolean, :default => true, :desc => "Add code to manage authorization with cancan"
+  class_option :user_class, :type => :boolean, :default => 'user', :desc => "Set the user class name"
+  class_option :formtastic, :type => :boolean, :default => true, :desc => "Copy formtastic files into leosca custom folder (inside project)"
+  class_option :jquery_ui, :type => :boolean, :default => true, :desc => "To use jQuery ui improvement"
+  class_option :rspec, :type => :boolean, :default => true, :desc => "Include custom rspec generator and custom templates"
 
   def generate_layout
     template "config.rb", "config/initializers/config.rb"
 
-    template "styles/#{style_name}/stylesheet.sass", "app/assets/stylesheets/#{style_name}.sass"
+    template "styles/#{style_name}/stylesheets/app/stylesheet.sass", "app/assets/stylesheets/#{style_name}.sass"
 
     copy_file "layout_helper.rb", "app/helpers/layout_helper.rb"
 
@@ -76,7 +76,7 @@ class LeolayGenerator < Rails::Generators::Base
         config.generators do |g|
             g.stylesheets         false
             g.javascripts         false
-            g.leosca_controller :leosca_controller
+            g.leosca_controller   :leosca_controller
           end
 
           config.autoload_paths += %W(\#{config.root}/lib/extras)
@@ -185,14 +185,15 @@ class LeolayGenerator < Rails::Generators::Base
   def setup_formtastic
     return unless options.formtastic?
 
-    path = "vendor/assets/stylesheets/formtastic"
+    path = "styles/#{style_name}/stylesheets/vendor/formtastic"
+    dest_path = "vendor/assets/stylesheets/formtastic"
+
+    path = dest_path unless File.exists?(path)
+
     file = "#{path}/formtastic.css"
     copy_file file, file unless File.exists?(file)
     file = "#{path}/formtastic_changes.css"
     copy_file file, file
-
-    path = "vendor/assets/stylesheets/jquery-ui"
-    directory path, path
 
     file = "config/initializers/formtastic.rb"
     inject_into_file file, :after => "# Formtastic::SemanticFormBuilder.i18n_lookups_by_default = false" do
@@ -265,6 +266,8 @@ class LeolayGenerator < Rails::Generators::Base
     copy_file file, file
 
     if options.jquery_ui?
+      directory "styles/#{style_name}/stylesheets/vendor/jquery-ui", "vendor/assets/stylesheets/jquery-ui"
+
       file = "#{app_path}/application.css"
       inject_into_file file, :before => "*/" do
         <<-FILE.gsub(/^        /, '')
@@ -286,6 +289,57 @@ class LeolayGenerator < Rails::Generators::Base
        *= require_tree ./formtastic
       FILE
     end if options.formtastic?
+  end
+
+  def setup_rspec
+    file = "spec/spec_helper.rb"
+    return unless File.exists?(file) && options.rspec?
+    inject_into_file file, :after => "require 'rspec/rails'" do
+    <<-FILE.gsub(/^    /, '')
+
+    require 'capybara/rspec'
+    require 'helpers/application_helpers_spec'
+
+    Capybara.default_wait_time = 10 #default=2
+    FILE
+    end
+
+    gsub_file file, 'config.fixture_path = "#{::Rails.root}/spec/fixtures"', '#config.fixture_path =  "#{::Rails.root}/spec/fixtures"'
+    #inject_into_file file, "#", :before => 'config.fixture_path = "#{::Rails.root}/spec/fixtures"'
+
+    gsub_file file, "config.use_transactional_fixtures = true" do
+    <<-FILE.gsub(/^  /, '')
+  config.use_transactional_fixtures = false
+
+    config.before(:suite) do
+      DatabaseCleaner.strategy = :truncation
+    end
+
+    config.before(:each) do
+      DatabaseCleaner.start
+    end
+
+    config.after(:each) do
+      DatabaseCleaner.clean
+    end
+
+    config.include ApplicationHelpers
+    FILE
+    end
+
+    file = "spec/factories.rb"
+    copy_file file, file
+    file = "spec/support/devise.rb"
+    copy_file file, file
+    file = "spec/helpers/application_helpers_spec.rb"
+    copy_file file, file
+    file = "lib/templates/rspec/scaffold"
+    directory file, file
+    file = "lib/templates/rspec/scaffold"
+    directory file, file
+    file = "lib/generators/rspec/scaffold"
+    directory file, file
+
   end
 
   private

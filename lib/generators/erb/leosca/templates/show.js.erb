@@ -1,0 +1,7 @@
+var $dialog = $('<div></div>')
+    .html("<%%= escape_javascript(render('show'))%>")
+    .dialog({
+        autoOpen: false,
+        title: '<%%= "#{t(:show)}"%>'
+    });
+$dialog.dialog('open');
