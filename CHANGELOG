@@ -1,3 +1,16 @@
+1.7.0 (October 1th, 2011) Marco Mastrodonato
+* New feature to add a resource management within a namescape. Unlike the original way (rails g leosca admin/resource ...which remains available), the resource is not under the namespace but only its management so you could create one for several kind of users. Try it adding the new option like this example: --leospace=admin
+* Huge code improvements
+
+
+
+1.6.1 (September 20th, 2011) Marco Mastrodonato
+* Improved ajax show title
+* List resource: the link to parent show resource is now ajax (if remote = true)
+* Minor bug fix
+
+
+
 1.6.0 (September 16th, 2011) Marco Mastrodonato
 * Nested resource: use new option rails g leosca product --under=category field:type
 * Improved views data format

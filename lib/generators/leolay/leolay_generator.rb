@@ -6,7 +6,7 @@ class LeolayGenerator < Rails::Generators::Base
   class_option :second_color, :type => :string, :default => nil, :desc => "Force a secondary color for the stylesheet"
   class_option :authentication, :type => :boolean, :default => true, :desc => "Add code to manage authentication with devise"
   class_option :authorization, :type => :boolean, :default => true, :desc => "Add code to manage authorization with cancan"
-  class_option :user_class, :type => :boolean, :default => 'user', :desc => "Set the user class name"
+  class_option :auth_class, :type => :boolean, :default => 'user', :desc => "Set the authentication class name"
   class_option :formtastic, :type => :boolean, :default => true, :desc => "Copy formtastic files into leosca custom folder (inside project)"
   class_option :jquery_ui, :type => :boolean, :default => true, :desc => "To use jQuery ui improvement"
   class_option :rspec, :type => :boolean, :default => true, :desc => "Include custom rspec generator and custom templates"
@@ -112,7 +112,7 @@ class LeolayGenerator < Rails::Generators::Base
   end
 
   def setup_authentication
-    file = "app/models/#{options.user_class}.rb"
+    file = "app/models/#{options.auth_class}.rb"
     #puts "File #{file} #{File.exists?(file) ? "" : "does not"} exists!"
     return unless options.authentication? and File.exists?(file)
 
@@ -132,6 +132,9 @@ class LeolayGenerator < Rails::Generators::Base
       end
       def role?(role)
         roles.include? role.to_s
+      end
+      def admin?
+        self.role? 'admin'
       end
       FILE
     end
@@ -333,12 +336,12 @@ class LeolayGenerator < Rails::Generators::Base
     copy_file file, file
     file = "spec/helpers/application_helpers_spec.rb"
     copy_file file, file
-    file = "lib/templates/rspec/scaffold"
-    directory file, file
-    file = "lib/templates/rspec/scaffold"
-    directory file, file
-    file = "lib/generators/rspec/scaffold"
-    directory file, file
+    #file = "lib/templates/rspec/scaffold"
+    #directory file, file
+    #file = "lib/templates/rspec/scaffold"
+    #directory file, file
+    #file = "lib/generators/rspec/scaffold"
+    #directory file, file
 
   end
 

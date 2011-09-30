@@ -58,18 +58,18 @@ module Leonardo
     end
     def attribute_to_requests(attribute)
       case attribute.type
-        when :boolean                 then "      check '#{singular_table_name}_#{attribute.name}' if #{singular_table_name}.#{attribute.name}"
-        when :references, :belongs_to then "      select #{singular_table_name}.#{attribute.name}.name, :from => '#{singular_table_name}_#{attribute.name}_id'"
+        when :boolean                 then "check '#{singular_table_name}_#{attribute.name}' if #{singular_table_name}.#{attribute.name}"
+        when :references, :belongs_to then "select #{singular_table_name}.#{attribute.name}.name, :from => '#{singular_table_name}_#{attribute.name}_id'"
         when :datetime, :time, :timestamp
                                       then ""
-        when :date                    then "      fill_in '#{singular_table_name}_#{attribute.name}', :with => #{singular_table_name}.#{attribute.name}.strftime('%d-%m-%Y')"
-        else                               "      fill_in '#{singular_table_name}_#{attribute.name}', :with => #{singular_table_name}.#{attribute.name}"
+        when :date                    then "fill_in '#{singular_table_name}_#{attribute.name}', :with => #{singular_table_name}.#{attribute.name}.strftime('%d-%m-%Y')"
+        else                               "fill_in '#{singular_table_name}_#{attribute.name}', :with => #{singular_table_name}.#{attribute.name}"
       end
     end
     def attribute_to_erb(attribute, object)
       case attribute.type
       when :boolean                   then "<%= #{object}.#{attribute.name} ? style_image_tag(\"ico_v.png\", :class => \"ico_true\") : style_image_tag(\"ico_x.png\", :class => \"ico_false\") %>"
-      when :references, :belongs_to   then "<%= link_to((#{object}.#{attribute.name}.try(:name) || \"\#{t('models.#{attribute.name}')} \#{#{object}.#{attribute.name}.try(:id)}\"), #{object}.#{attribute.name}) %>"
+      when :references, :belongs_to   then "<%= link_to((#{object}.#{attribute.name}.try(:name) || \"\#{t('models.#{attribute.name}')} \#{#{object}.#{attribute.name}.try(:id)}\"), #{object}.#{attribute.name}, :remote => @remote) %>"
       when :integer                   then "<%= number_with_delimiter #{object}.#{attribute.name} %>"
       when :decimal                   then "<%= number_to_currency #{object}.#{attribute.name} %>"
       when :float                     then "<%= number_with_precision #{object}.#{attribute.name} %>"
@@ -92,34 +92,29 @@ module Leonardo
         return  "have_xpath('//table/tbody/tr')", "have_no_xpath('//table/tbody/tr')"
       end
     end
-    def plural_path_file_name
-      (class_path + [plural_table_name]).join('/')
-    end
   end
 
   module Nested
     protected
 
-    #product under brand/category => "brand_category_product"
-    def underscore_resource_path(names=:all_singular)
-      case names
-      when :all_singular
-        resource_path.join('_')
-      when :all_plural
-        #who needs?
-      when :parent_singular_resource_plural
-        resource_path.join('_').pluralize
-      else
-        "#{names.to_s}_not_supported"
-      end
-
-    end
+    #Add leonardo namespace to class_path
+    #def class_path
+    #  super + base_namespaces
+    #end
 
     #product => products_path
     #product under category => category_products_path(@category)
     #product under brand/category => brand_category_products_path(@brand, @category)
     def list_resources_path
       "#{underscore_resource_path(:parent_singular_resource_plural)}_path(#{formatted_parent_resources("@")})"
+    end
+
+    #product under category => category_products_path(category)
+    #product under brand/category => brand_category_products_path(@brand, category)
+    #TODO: figure out how to build links for a particular resource in the path
+    def list_resources_path_back
+      return unless nested?
+      "#{underscore_resource_path(:parent_singular_resource_plural)}_path(#{formatted_parent_resources("@").reverse.sub(/@/, "").reverse})"
     end
 
     #product => "product"
@@ -173,18 +168,34 @@ module Leonardo
       resources.size > 1 ? "#{delimiter[0..0]}#{str_resources}#{delimiter[1..1]}" : str_resources
     end
 
+    #product under brand/category => "brand_category_product"
+    def underscore_resource_path(names=:all_singular)
+      case names
+      when :all_singular
+        resource_path.join('_')
+      #when :all_plural
+        #who needs?
+      when :parent_singular_resource_plural
+        resource_path.join('_').pluralize
+      else
+        "#{names.to_s}_not_supported"
+      end
+    end
+
     #product under brand/category => ["brand", "category", "product"] or ["@brand", "@category", "@product"]
-    def resource_path(prefix_parent="", prefix_resource="", resource=nil)
+    def resource_path(prefix_parent="", prefix_resource="", resource=nil, prefix_namespace="")
       if resource
         prefix_parent = "#{resource}."
       else
         resource = singular_table_name
       end
 
+      prefix_namespace = ":" if prefix_namespace.empty? && prefix_parent.any?
+
       if nested?
-        parent_resources(prefix_parent) << "#{prefix_resource}#{resource}"
+        (base_namespaces(prefix_namespace) + parent_resources(prefix_parent)) << "#{prefix_resource}#{resource}"
       else
-        ["#{prefix_resource}#{resource}"]
+        base_namespaces(prefix_namespace) << "#{prefix_resource}#{resource}"
       end
     end
 
@@ -210,11 +221,31 @@ module Leonardo
 
     #product under brand/category => ["brand", "category"]
     def base_parent_resources
+      return [] unless options[:under].present?
       options[:under].split('/').map{|m| m.underscore}
     end
 
     def nested?
       options[:under].present?
+    end
+
+    ### NAMESPACE ###
+    def leospaced?
+      options[:leospace].present?
+    end
+
+    def base_namespaces(prefix="")
+      return [] unless options[:leospace].present?
+      options[:leospace].split('/').map{|m| "#{prefix}#{m.underscore}"}
+    end
+
+    def last_namespace(prefix="")
+      base_namespaces(prefix).last
+    end
+
+    def formatted_namespace_path(separator='/')
+      return "" unless leospaced?
+      "#{base_namespaces.join(separator)}#{separator}"
     end
 
     module Test

@@ -1,16 +1,16 @@
 <% module_namespacing do -%>
-class <%= controller_class_name %>Controller < ApplicationController
+class <%= leospaced? ? (base_namespaces << controller_class_name).join('/').camelize : controller_class_name %>Controller < ApplicationController
   <%= "before_filter :authenticate_user!#{CRLF}" if authentication? -%>
   <%= "load_and_authorize_resource#{CRLF}" if authorization? -%>
-  <%= "before_filter :load_parents#{CRLF}" if nested? -%>
+  <%#= "before_filter :load_parents#{CRLF}" if nested? -%>
+before_filter :load_before
 
-<% if nested? -%>
-  def load_parents
+  def load_before
+    @remote = <%= options.remote? %>
   <% base_parent_resources.each do |parent| -%>
   @<%= parent %> = <%= parent.classify %>.find params[:<%= parent %>_id]
   <% end -%>
 end
-<% end -%>
 
   # GET <%= route_url %>
   # GET <%= route_url %>.json
@@ -19,11 +19,11 @@ end
     conditions_fields = []
     conditions_values = []
 
-    <%- attributes.each do |attribute| -%>
-    <% if nested? && (attribute.type == :references || attribute.type == :belongs_to) -%>
-conditions_fields << "#{<%= class_name %>.table_name}.<%= base_parent_resources.last %>_id = ?"
-    conditions_values << @<%= base_parent_resources.last %>.id
-    <%- end -%>
+    <%- base_parent_resources.each do |parent| -%>
+      <%- if attributes.map(&:name).include? parent -%>
+    conditions_fields << "#{<%= class_name %>.table_name}.<%= parent %>_id = ?"
+    conditions_values << @<%= parent %>.id
+      <%- end -%>
     <%- end -%>
 
     if params[:<%= singular_table_name %>]

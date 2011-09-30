@@ -4,7 +4,7 @@
 
 <%% title t('attributes.<%= singular_table_name %>.op_index'<%= ", {:parent => \"#{last_parent}\", :name => @#{last_parent}.try(:name) || @#{last_parent}.try(:id)}" if nested? -%>) %>
 
-<%% remote = <%= options.remote? %> %>
+<%% remote = @remote %>
 <%%= form_for <%= show_resource_path("@") %>, :remote => remote, :html => { :method => :get, :id => "form_search" } do |f| %>
 <div class="filter-container">
   <%- attributes.each do |attribute| -%>

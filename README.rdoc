@@ -102,8 +102,9 @@ leolay:
 leosca:
 
  rails generate leosca product name:string
- rails generate leosca product name:string --under=category  => if you want resource nested under another
  rails generate leosca product name:string --skip-remote     => if you do not want ajax (you can also enable later)
+ rails generate leosca product name:string --under=category  => if you want resource nested under another
+ rails generate leosca product name:string --leospace=admin	 => if you need a resource with a management under a namespace
 
 
 PS: Of course, these options are in addition to those provided by the original scaffold
@@ -133,9 +134,9 @@ For more information about usage:
 
 == Tutorial
 
-(only italian at the moment)
-http://mastrodonato.info/index.php/2011/08/leonardo-generatore-di-applicazioni-rails-3-1/
-
+http://marco.mastrodonato.info/2011/09/leonardo-un-generatore-di-applicazioni.html (italian)
+or
+http://en-marcomastrodonato.blogspot.com/2011/09/leonardo-rails-31-application-generator.html
 
 
 == Found a bug?

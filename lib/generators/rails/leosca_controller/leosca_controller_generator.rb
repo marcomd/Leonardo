@@ -1,13 +1,12 @@
-require 'rails/generators/resource_helpers'
-require File.join(File.dirname(__FILE__), '../../base')
+require 'rails/generators/rails/scaffold_controller/scaffold_controller_generator'
+require File.join(File.dirname(__FILE__), '../../leonardo')
 
 WINDOWS = (RUBY_PLATFORM =~ /dos|win32|cygwin/i) || (RUBY_PLATFORM =~ /(:?mswin|mingw)/)
 CRLF = WINDOWS ? "\r\n" : "\n"
 
 module Rails
   module Generators
-    class LeoscaControllerGenerator < NamedBase
-      include ResourceHelpers
+    class LeoscaControllerGenerator < ::Rails::Generators::ScaffoldControllerGenerator
       include ::Leonardo::Leosca
       include ::Leonardo::Nested
       include ::Leonardo::Nested::Test
@@ -18,25 +17,16 @@ module Rails
       class_option :seeds, :type => :boolean, :default => true, :desc => "Create seeds to run with rake db:seed"
       class_option :seeds_elements, :type => :string, :default => "30", :desc => "Choose seeds elements", :banner => "NUMBER"
       class_option :remote, :type => :boolean, :default => true, :desc => "Enable ajax. You can also do later set remote to true into index view."
-      class_option :under, :type => :string, :default => "", :banner => "brand/category", :desc => "Nested resources"
+      class_option :under, :type => :string, :default => "", :banner => "brand/category", :desc => "To nest a resource under another(s)"
+      class_option :leospace, :type => :string, :default => "", :banner => ":admin", :desc => "To nest a resource under namespace(s)"
 
-
-      check_class_collision :suffix => "Controller"
-
-      class_option :orm, :banner => "NAME", :type => :string, :required => true,
-                         :desc => "ORM to generate the controller for"
-
+      #Override
       def create_controller_files
-        template 'controller.rb', File.join('app/controllers', class_path, "#{controller_file_name}_controller.rb")
+        template 'controller.rb', File.join('app/controllers', class_path, base_namespaces, "#{controller_file_name}_controller.rb")
       end
 
-      hook_for :template_engine, :as => :leosca
-      hook_for :test_framework, :as => :scaffold
-
-      # Invoke the helper using the controller name (pluralized)
-      hook_for :helper, :as => :scaffold do |invoked|
-        invoke invoked, [ controller_name ]
-      end
+      #Override
+      hook_for :template_engine, :test_framework, :as => :leosca
 
       def update_yaml_locales
         #Inject model and attributes name into yaml files for i18n
@@ -141,72 +131,6 @@ module Rails
       def update_specs
         file = "spec/spec_helper.rb"
         return unless File.exists? file
-
-        check_attr_to_have, check_attr_to_not_have = get_attr_to_match
-
-        file = "spec/requests/#{plural_path_file_name}_spec.rb"
-        remove = <<-FILE.gsub(/^      /, '')
-          it "works! (now write some real specs)" do
-            # Run the generator again with the --webrat flag if you want to use webrat methods/matchers
-            get #{plural_table_name}_path
-            response.status.should be(200)
-          end
-        FILE
-        gsub_file file, remove, ""
-
-        inject_into_file file, :after => "describe \"GET /#{plural_table_name}\" do" do
-        <<-FILE.gsub(/^      /, '')
-
-          it "displays #{plural_table_name}" do
-            #{singular_table_name} = Factory(:#{singular_table_name})
-            visit #{list_resources_path_test}
-            #{"login_view_as(:user_guest)" if authentication?}
-            #save_and_open_page #uncomment to debug
-            page.should #{check_attr_to_have}
-            assert page.find("#tr\#{#{singular_table_name}.id}").visible?
-          end
-        FILE
-        end
-
-        inject_into_file file, :before => /^end/ do
-          items = []
-          attributes.each do |attribute|
-            items << attribute_to_requests(attribute)
-          end
-          <<-FILE.gsub(/^        /, '')
-
-          describe "POST /#{plural_table_name}" do
-            it "creates a new #{singular_table_name}" do
-              #{singular_table_name} = Factory.build(:#{singular_table_name})
-              visit #{new_resource_path_test}
-              #{"login_view_as(:user_admin)" if authentication?}
-        #{items.join(CRLF)}
-              click_button "Create \#{I18n.t('models.#{singular_table_name}')}"
-              #save_and_open_page #uncomment to debug
-              page.should have_content(I18n.t(:created, :model => I18n.t('models.#{singular_table_name}')))
-              page.should #{check_attr_to_have}
-            end
-          end
-
-          describe "Check ajax /#{plural_table_name}" do
-            it "checks links on list page", :js => true do
-              #{singular_table_name} = Factory(:#{singular_table_name})
-              visit #{list_resources_path_test}
-              #{"login_view_as(:user_manager)" if authentication?}            #authentication
-              page.find("div#list").should #{check_attr_to_have}
-              click_link I18n.t(:show)
-              page.find("div.ui-dialog").should #{check_attr_to_have}         #checks if dialog is appeared
-              click_link "close"                                              #close dialog
-              !page.find("div.ui-dialog").visible?                            #checks if dialog has been closed
-              click_link I18n.t(:destroy)                                     #check ajax destroy
-              page.driver.browser.switch_to.alert.accept                      #confirms destroy
-              #save_and_open_page                                             #uncomment to debug
-              page.find("div#list").should #{check_attr_to_not_have}          #checks if content has been removed
-              !page.find("#tr\#{#{singular_table_name}.id}").visible?         #checks if row has been hidden
-            end
-          end
-          FILE
-        end
 
         file = "spec/factories.rb"
         inject_into_file file, :before => "  ### Insert below here other your factories ###" do

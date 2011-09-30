@@ -15,6 +15,12 @@ def value_for_check(attribute)
     "#{name} => (r.#{attribute.name}.try(:name) || r.#{attribute.name}.try(:id))"
   when :boolean
     nil
+  when :decimal
+    "#{name} => number_to_currency(r.#{attribute.name})"
+  when :integer
+    "#{name} => number_with_delimiter(r.#{attribute.name})"
+  when :float
+    "#{name} => number_with_precision(r.#{attribute.name})"
   else
     "#{name} => r.#{attribute.name}"
   end
@@ -23,7 +29,7 @@ end
 %>
 
 <% output_attributes = attributes.reject{|attribute| [:datetime, :timestamp, :time, :date].index(attribute.type) } -%>
-describe "<%= ns_table_name %>/index.html.<%= options[:template_engine] %>" do
+describe "<%= formatted_namespace_path %><%= ns_table_name %>/index.html.<%= options[:template_engine] %>" do
   before(:each) do
     <%- parents = []; str_parents_create = str_parents_where = "" -%>
     <%- base_parent_resources.each do |parent| -%>

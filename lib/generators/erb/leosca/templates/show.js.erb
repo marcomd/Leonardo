@@ -2,6 +2,6 @@ var $dialog = $('<div></div>')
     .html("<%%= escape_javascript(render('show'))%>")
     .dialog({
         autoOpen: false,
-        title: '<%%= "#{t(:show)}"%>'
+        title: '<%%= "#{t('models.<%= singular_table_name %>')} #{@<%= singular_table_name %>.try(:name) || @<%= singular_table_name %>.try(:id)}"%>'
     });
 $dialog.dialog('open');

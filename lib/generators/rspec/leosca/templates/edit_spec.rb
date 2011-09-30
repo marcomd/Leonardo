@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 <% output_attributes = attributes.reject{|attribute| [:datetime, :timestamp, :time, :date].index(attribute.type) } -%>
-describe "<%= ns_table_name %>/edit.html.<%= options[:template_engine] %>" do
+describe "<%= formatted_namespace_path %><%= ns_table_name %>/edit.html.<%= options[:template_engine] %>" do
   before(:each) do
     @<%= ns_file_name %> = assign(:<%= ns_file_name %>, Factory(:<%= ns_file_name %>) )
     <%- base_parent_resources.each do |parent| -%>
