@@ -1,0 +1,16 @@
+<%%= f.inputs do %>
+<%- attributes.each do |attribute| -%>
+    <%- case attribute.type
+        when :references, :belongs_to  -%>
+    <%% if <%= singular_table_name %>.new_record? -%>
+        <%%= f.input :<%= attribute.name %> if can?(:manage, <%=class_name %>) %>
+    <%% else -%>
+        <%%= f.input :<%= attribute.name %> %>
+    <%% end -%>
+    <%-	when :date -%>
+    <%%= f.input :<%= attribute.name %>, :as => :string, :input_html => { :class => 'calendar', :maxlength => 10 } %>
+    <%-	else -%>
+    <%%= f.input :<%= attribute.name %> %>
+    <%- end -%>
+<%- end -%>
+<%% end %>

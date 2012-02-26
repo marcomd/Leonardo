@@ -36,12 +36,12 @@ After the question will start generations.
 There will be a conflict on locales/en.yml which you must force if it is the first generation.
 
 Will be:
- * Created an application layout with a nice and dynamic stylesheet based on sass
- * Customized views (only erb atm) and controller ajax ready and filters based on attributes, i18n messages ecc.
- * Customized application.rb to exclude javascript and stylesheet for every resource you will create
- * Customized application controller to manage i18n and others stuff like authentication, authorization ecc [optionals]
- * Created customized partials for pagination with kaminari [optional]
- * Added jQuery-ui with a custom ligthness layout
+* Created an application layout with a nice and dynamic stylesheet based on sass
+* Customized views (only erb atm) and controller ajax ready and filters based on attributes, i18n messages ecc.
+* Customized application.rb to exclude javascript and stylesheet for every resource you will create
+* Customized application controller to manage i18n and others stuff like authentication, authorization ecc [optionals]
+* Created customized partials for pagination with kaminari [optional]
+* Added jQuery-ui with a custom ligthness layout
 
 2. If you have used my template you have an application ready to work:
 run rails s and try it on http://localhost:3000
@@ -62,11 +62,11 @@ Profile exists only if you chose authorization as well.
 rails g leosca product name:string description:text active:boolean items:integer price:decimal
 
 This will act as a normal scaffold and has more new features:
- * will be invoked new leosca_controller which is a customized scaffold_controller
- * customized views with new layout and ajax ready (only destroy atm)
- * attributes will be insert into i18n files for a fast translation
- * seeds will be created for you to populate new table
- * ...and other stuff
+* will be invoked new leosca_controller which is a customized scaffold_controller
+* customized views with new layout and ajax ready (only destroy atm)
+* attributes will be insert into i18n files for a fast translation
+* seeds will be created for you to populate new table
+* ...and other stuff
 
 4. Apply to db
 rake db:migrate

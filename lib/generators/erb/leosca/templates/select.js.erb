@@ -1,0 +1,28 @@
+<%% @results.each do |key, value| -%>
+  <%% result, msg = value %>
+  var id = "#tr<%%= key %>";
+  <%% case @operation %>
+  <%% when :destroy %>
+    $(id).hide('fast').text('');
+  <%% when :edit %>
+    //$(id).effect("highlight", {}, 3000);
+    <%% @<%= singular_table_name %> = @<%= plural_table_name %>.find(key) %>
+    var $dialog = $('<div></div>')
+    .html("<%%= escape_javascript(render('form'))%>")
+    .dialog({
+        autoOpen: false,
+        minHeight: 400,
+        minWidth: 700,
+        title: '<%%= "#{t('models.<%= singular_table_name %>')} #{key}"%>'
+    });
+    $dialog.dialog('open');
+  <%% else %>
+      //Other operations which updates the row
+      $(id).html("<%%= escape_javascript(render('row_index', :<%= singular_table_name %> => @<%= plural_table_name %>.find(key), :remote => true, :message => msg ))%>");
+      <%% if result -%>
+      $(id).removeClass('error').addClass('operation done');
+      <%% else -%>
+      $(id).removeClass('done').addClass('operation error');
+      <%% end -%>
+  <%% end %>
+<%% end -%>

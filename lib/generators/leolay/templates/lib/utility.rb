@@ -4,7 +4,7 @@ module Utility
   def self.export(params={})
     require 'fastercsv'
 
-    return "" unless params[:collection] && params[:collection].any?
+    return "" unless params[:collection] && params[:collection].size>0
     collection = add_collection params[:collection]
 
     head = params[:head]

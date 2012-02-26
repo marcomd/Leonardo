@@ -1,0 +1,22 @@
+<td>
+  <%%= check_box_tag "ids[]", <%= singular_table_name %>.id, false, {:id =>"check#{<%= singular_table_name %>.id}", :class => "selectable"} %>
+  <%%= link_to number_with_delimiter(<%= singular_table_name %>.id), <%= show_resource_path %><%= ", :remote => remote" if jquery_ui? %> %>
+</td>
+<%- attributes.each do |attribute| -%>
+<td><%= attribute_to_erb(attribute, singular_table_name) -%></td>
+<%- end -%>
+<!-- Manage section, do not remove this tag -->
+<%- if authorization? -%>
+<%%- if can? :update, <%= singular_table_name %> -%>
+<%- end -%>
+<td><%%= link_to t(:edit), <%= edit_resource_path %> %></td>
+<%- if authorization? -%>
+<%%- end -%>
+<%- end -%>
+<%- if authorization? -%>
+<%%- if can? :destroy, <%= singular_table_name %> -%>
+<%- end -%>
+<td><%%= link_to t(:destroy), <%= destroy_resource_path %>, <%= key_value :confirm, "t(:sure?)" %>, <%= key_value :method, ":delete" %>, :remote => remote %></td>
+<%- if authorization? -%>
+<%%- end -%>
+<%- end -%>

@@ -1,25 +1,8 @@
-<%% secondary_navigation({:value => link_to(t(:list),<%= plural_table_name %>_path)},
-                        ({:value => link_to(t(:add), new_<%= singular_table_name %>_path)}<%= " if can?(:create, @#{singular_table_name})" if authorization? %>),
-                        ({:value => link_to(t(:edit), edit_<%= singular_table_name %>_path(@<%= singular_table_name %>))}<%= " if can?(:update, @#{singular_table_name})" if authorization? %>),
-                        {:value => link_to(t(:show), @<%= singular_table_name %>), :active => true}
+<%% secondary_navigation({:value => link_to(t(:list), <%= list_resources_path %>)},
+                        ({:value => link_to(t(:add), <%= new_resource_path %>)}<%= " if can?(:create, @#{singular_table_name})" if authorization? %>),
+                        ({:value => link_to(t(:edit), <%= edit_resource_path("@") %>)}<%= " if can?(:update, @#{singular_table_name})" if authorization? %>),
+                        {:value  => t(:show), :active => true}
 )%>
 
-<table>
-<% attributes.each do |attribute| -%>
-<tr>
-  <%- case attribute.type
-      when :boolean -%>
-    <td><b><%%= t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %>:</b></td>
-    <td><%%= @<%= singular_table_name %>.<%= attribute.name %> ? style_image_tag("ico_v.png") : style_image_tag('ico_x.png') %></td>
-  <%- when :references, :belongs_to -%>
-    <%% link_name = @<%= singular_table_name %>.<%= attribute.name %>.try(:name) || @<%= singular_table_name %>.<%= attribute.name %>.try(:id) %>
-    <td><b><%%= t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %>:</b></td>
-    <td><%%= link_to(link_name, @<%= singular_table_name %>.<%= attribute.name %> ) %></td>
-  <%- else -%>
-    <td><b><%%= t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %>:</b></td>
-    <td><%%= @<%= singular_table_name %>.<%= attribute.name %> %></td>
-  <%- end -%>
-</tr>
-<% end -%>
-</table>
+<%%= render 'show', :remote => @remote %>
 

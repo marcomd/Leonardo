@@ -8,6 +8,7 @@ module Leosca
         directory "erb/leosca", "lib/generators/erb/leosca" if options.erb?
         directory "rails/leosca", "lib/generators/rails/leosca"
         directory "rails/leosca_controller", "lib/generators/rails/leosca_controller"
+        copy_file "leonardo.rb", "lib/generators/leonardo.rb"
       end
     end
   end

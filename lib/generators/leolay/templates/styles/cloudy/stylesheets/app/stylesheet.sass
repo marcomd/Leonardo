@@ -1,0 +1,366 @@
+// MAIN COLORS
+$main_color: <%= options[:main_color] || "rgb(200,200,200)" %>
+$second_color: <%= options[:second_color] || "rgb(250,10,10)" %>
+$main_bg: white
+
+// DERIVED COLORS
+$title_color: darken($second_color, 5%)
+$text_color: darken($main_color, 50%)
+$link_color: darken($main_color, 45%)
+$main_bg_dark: darken($main_bg, 5%)
+$main_bg_darker: darken($main_bg, 15%)
+$header_bg: darken($main_color, 60%)
+$header_bg_soft: lighten($header_bg, 17%)
+$header_color: lighten($header_bg, 25%)
+$footer_color: $text_color
+$textbox_color: darken($second_color, 10%)
+
+//OTHERS
+$textbox_bg: #f5f5f5          //related to the textbox image
+$table_row_selection_color: rgb(255,255,210)
+
+$style_path: styles/<%= style_name %>
+
+*
+  margin: 0
+
+body
+  font-family: Tahoma, Verdana, Arial
+  font-size: 18px
+  background-color: $main_color
+  color: $text_color
+
+a
+  &:link, &:visited
+    color: $link_color
+    text-decoration: underline
+  &:hover, &:active
+    color: $second_color
+    text-decoration: none
+  img
+    border: none
+
+div#header
+  margin: 0px auto
+  padding: 0 20px
+  background-color: $header_bg
+  background: -moz-linear-gradient(center top , $header_bg, $header_bg_soft) repeat scroll 0 0 transparent
+  color: $header_color
+  border-bottom: 2px solid $title_color
+  #app-title
+    float: left
+    margin: 0
+    h1
+      color: ligthen($title_color, 20%)
+      a
+        &:link, &:visited
+          color: inherit
+          text-decoration: none
+    .subtitle
+      color: $header_color
+      font-size: 0.4em
+  #session
+    float: right
+    font-size: 0.9em
+    a
+      &:link, &:visited
+        color: $second_color
+      &:hover, &:active
+        color: $second_color
+        text-decoration: none
+  #user-navigation
+    position: absolute
+    right: 20px
+    top: 0
+
+div#wrapper
+  margin: 20px
+
+div#container
+  background-color: $main_bg
+  padding: 1em 2em 3em 2em
+  border: 1px solid $main_bg_dark
+  -moz-border-radius: 0px 10px 10px 10px
+  border-radius: 0px 10px 10px 10px
+  //-webkit-border-radius: 0px 10px 10px 10px
+
+
+
+div#footer
+  p
+    color: $footer_color
+    font-size: 0.8em
+    text-align: center
+
+
+input, select, textarea
+  background: $textbox_bg url($style_path + '/input_background_bn.png') repeat-x scroll 0 0
+  color: $textbox_color
+  border: 1px solid darken($textbox_bg, 10%)
+  -moz-border-radius: 6px
+  border-radius: 6px
+  font-size: 1.5em
+  padding: 0.2em
+  &.callback
+    background: inherit
+    border: 0 none
+    color: $main_bg_darker
+    display: block
+    font-size: 0.6em
+
+div.navigation
+  width: 100%
+  margin: 0 auto
+  ul
+    margin: 0
+    padding: 0
+    list-style-type: none
+    li
+      float: left
+  &.primary
+    ul
+      li
+        padding: 3px 10px
+        /*border: 3px solid $primary_bg*/
+        -moz-border-radius: 10px 10px 0px 0px/*Mozzilla Firefox*/
+        border-radius: 10px 10px 0px 0px/*Google chrome*/
+        margin-right: 5px
+        background-color: darken($main_color, 20%)
+        border-top: 1px solid darken($main_color, 10%)
+        position: relative
+        top: 0px
+        &.active
+          background-color: $main_color
+          //border-top: 1px solid lighten($main_color, 10%)
+          //font-weight: bold
+          border-left: 2px solid $title_color
+          border-right: 2px solid $title_color
+          border-top: 2px solid $title_color
+          top: 2px
+      a
+        &:link, &:visited, &:hover, &:active
+          text-decoration: none
+  &.secondary
+    ul
+      li
+        padding: 3px 10px
+        -moz-border-radius: 6px 6px 0px 0px/*Mozzilla Firefox*/
+        border-radius: 6px 6px 0px 0px/*Google chrome*/
+        margin-right: 4px
+        background-color: darken($main_color, 20%)
+        border-top: 1px solid darken($main_color, 10%)
+        position: relative
+        top: 1px
+        &.active
+          //border: 1px solid $main_bg_dark
+          border-color: $main_bg_dark $main_bg_dark $main_bg
+          border-width: 1px
+          border-style: solid
+          background-color: $main_bg
+          font-weight: bold
+          //border-bottom: 5px solid $main_bg
+      a
+        &:link, &:visited, &:hover, &:active
+          text-decoration: none
+
+.focused
+  border: 1px solid $second_color
+
+.button
+  border: none
+  cursor: pointer
+
+  &.small
+    font-size: 0.85em
+    font-weight: bold
+    color: white
+    height: 49px
+    width: 120px
+    padding-top: 0
+    background: transparent url($style_path + '/button_120_98.png') no-repeat
+    &:hover
+      color: #aaa
+      background-position: 0px -49px
+
+  &.medium
+    font-size: 1.05em
+    font-weight: bold
+    color: $main_bg
+    height: 63px
+    width: 170px
+    background: transparent url($style_path + '/button_170_126.png') no-repeat
+    &:hover
+      background-position: 0px -63px
+
+  &.large
+    font-size: 1.2em
+    font-weight: bold
+    color: $main_bg
+    height: 85px
+    width: 229px
+    background: transparent url($style_path + '/button_229_170.png') no-repeat
+    &:hover
+      background-position: 0px -85px
+
+h1
+  color: $title_color
+  font-weigth: bold
+  margin-bottom: 0.3em
+
+h2
+  color: $main_color
+  margin-bottom: 0.2em
+
+h3
+  color: lighten($main_color, 20%)
+  margin-bottom: 0.15em
+
+
+.message
+  padding: 15px
+  padding-left: 70px
+  margin: 10px 0
+
+  &.notice
+    background: transparent url($style_path + '/msg_notice.gif') no-repeat 15px 50%
+    border-color: #8FDC79
+    color: #5FAC49
+  &.alert
+    background: transparent url($style_path + '/msg_error.gif') no-repeat 15px 50%
+    border-color: #C00
+    color: #AA0
+  &.error
+    background: #FFF url($style_path + '/msg_error.gif') no-repeat 15px 50%
+    border-color: #C00
+    color: #C00
+
+
+.filter-container
+  padding-bottom: 8px
+  .filter-field
+    float: left
+    padding: 4px
+
+form
+  div.field
+    padding: 5px 0
+    //input, select, textarea
+    //  font-size: 1.5em
+    //  padding: 0.2em
+      //-moz-box-shadow: 3px 3px 3px $main_color /* Firefox */
+      //box-shadow: 3px 3px 3px $main_color /* Firefox */
+      //-moz-border-radius: 6px
+      //border-radius: 6px
+
+  div.actions
+    padding: 10px
+    //border: 1px dashed $main_color
+
+table.user
+  width: 100%
+  thead
+    tr
+      & :hover
+        background-color: inherit
+      th
+        & :link, & :visited
+          color: $title_color
+        & :hover, & :active
+          color: $text_color
+        //background-color: $main_bg
+        color: $title_color
+        padding: 2px
+        text-align: left
+        &.main
+          font-weight: bold
+          text-align: center
+        & .sorted
+          color: $text_color
+          padding-right: 10px
+          background-repeat: no-repeat
+          background-position: right center
+        & .asc
+          background-image: url($style_path + '/arrow_up.png')
+        & .desc
+          background-image: url($style_path + '/arrow_down.png')
+  tbody
+    tr
+      line-height: 1.2em
+      height: 2.5em
+      &.odd
+        &.selected
+          background-color: darken($table_row_selection_color, 5%)
+        &:hover
+          background-color: $table_row_selection_color
+      &.even
+        background-color: darken($main_bg, 2%)
+        &.selected
+          background-color: darken($table_row_selection_color, 7%)
+        &:hover
+          background-color: darken($table_row_selection_color, 2%)
+
+  td
+    padding: 2px
+    color: lighten($text_color, 20%)
+    .main
+      color: $text_color
+      font-weight:bold
+      text-align:center
+
+.separator
+  margin: 0.7em 0
+  border-bottom: 1px dashed lighten($second_color, 30%)
+
+//Navigation section
+#nav a
+  display: block
+#nav td
+  padding: 0
+  text-align: center
+.cur
+  font-weight: bold
+.csb
+  background: url($style_path + '/kaminari/nav.png') no-repeat
+  overflow: hidden
+  background-position: 0 0
+  height: 70px
+  display:  block
+.b
+  font-weight: bold
+
+.fieldWithErrors
+  display: inline
+
+#errorExplanation
+  width: 400px
+  border: 2px solid #CF0000
+  padding: 0px
+  padding-bottom: 12px
+  margin-bottom: 20px
+  background-color: #f0f0f0
+
+  h2
+    text-align: left
+    font-weight: bold
+    padding: 5px 5px 5px 15px
+    font-size: 12px
+    margin: 0
+    background-color: #c00
+    color: #fff
+
+  p
+    color: #333
+    margin-bottom: 0
+    padding: 8px
+
+  ul
+    margin: 2px 24px
+
+    li
+      font-size: 12px
+      list-style: disc
+
+.clear
+  clear: both
+  height: 0
+  overflow: hidden

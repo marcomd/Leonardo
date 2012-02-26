@@ -1,8 +1,7 @@
-<%%= form_for(@<%= singular_table_name %>) do |f| %>
+<%%= form_for(<%= form_resource_path %>) do |f| %>
   <%% if @<%= singular_table_name %>.errors.any? %>
     <div id="error_explanation">
       <h2><%%= pluralize(@<%= singular_table_name %>.errors.count, "error") %> prohibited this <%= singular_table_name %> from being saved:</h2>
-
       <ul>
       <%% @<%= singular_table_name %>.errors.full_messages.each do |msg| %>
         <li><%%= msg %></li>
@@ -11,12 +10,7 @@
     </div>
   <%% end %>
 
-<% attributes.each do |attribute| -%>
-  <div class="field">
-    <%%= f.label :<%= attribute.name %>, t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %><br />
-    <%%= f.<%= attribute.field_type %> :<%= attribute.name %> %>
-  </div>
-<% end -%>
+<%%= render 'fields', :f => f, :<%= singular_table_name %> => @<%= singular_table_name %> %>
   <div class="actions">
     <%%= f.submit :class => 'button large' %>
   </div>

@@ -57,8 +57,8 @@ it:
         format: "%n %u"
         unit: "€"
         # These five are to override number.format and are optional
-        separator: "."
-        delimiter: ","
+        separator: ","
+        delimiter: "."
         precision: 2
         significant: false
         strip_insignificant_zeros: false
@@ -176,10 +176,10 @@ it:
       # Default value for :prompt => true in FormOptionsHelper
       prompt: "Seleziona ..."
     # Default translation keys for submit FormHelper
-    submit:
-      create: 'Crea %{model}'
-      update: 'Aggiorna %{model}'
-      submit: 'Salva %{model}'
+    submit: &actions
+      create: "Crea %{model}"
+      update: "Aggiorna"
+      submit: "Procedi"
 
   activerecord: &activerecord
     models: &models
@@ -225,9 +225,8 @@ it:
     labels:
       <<: *attributes
     hints:
-    actions: &actions
-      create: "Crea %{model}"
-      update: "Aggiorna"
+    actions:
+      <<: *actions
   authentication:
     sign_in: "Accedi"
     sign_in_with: "Accedi con"
@@ -252,9 +251,19 @@ it:
   permission_denied: "Non hai i privilegi per svolgere questa operazione."
   created: "L'oggetto %{model} è stato creato correttamente."
   created_ko: "Un errore ha impedito la creazione dell'oggetto %{model}."
+  created_multiple: "La creazione di %{model} è stata completata con successo."
+  created_multiple_ko: "Un errore ha impedito la creazione di %{model}."
   updated: "L'oggetto %{model} è stato modificato correttamente."
   updated_ko: "Un errore ha impedito la modifica dell'oggetto %{model}."
+  updated_multiple: "La modifica di %{model} è avvenuta con successo."
+  updated_multiple_ko: "Un errore ha impedito la modifica di %{model}."
   deleted: "L'oggetto %{model} è stato eliminato."
+  updated_ko: "Un errore ha impedito l'eliminazione dell'oggetto %{model}."
+  deleted_multiple: "L'eliminazione di %{model} è avvenuta con successo."
+  deleted_multiple_ko: "Un errore ha impedito l'eliminazione di %{model}."
+  search_found: "La ricerca ha trovato %{found}"
+  search_not_found: "La ricerca non ha ottenuto risultati"
+  select_rows_from_list: "Seleziona le righe dalla lista prima di procedere"
 
   <<: *activerecord
   <<: *actions
@@ -278,4 +287,5 @@ it:
   radio-yes: "Si"
   radio-no: "No"
   radio-all: "Tutto"
+  loading: "Attendere..."
   choose_language: "Scegli la lingua"

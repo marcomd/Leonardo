@@ -1,0 +1,11 @@
+<%%= form_for(:<%= plural_table_name %>, :url => path, :method => :put) do |f| %>
+  <%% @<%= plural_table_name %>.each do |<%= singular_table_name %>| -%>
+    <%%= f.fields_for "#{<%= singular_table_name %>.id}", <%= singular_table_name %> do |ff| %>
+      <%%= render 'fields', :f => ff, :<%= singular_table_name %> => <%= singular_table_name %> %>
+    <%% end %>
+    <div class="separator"></div>
+  <%% end -%>
+  <div class="actions">
+    <%%= f.submit :class => 'button large' %>
+  </div>
+<%% end %>

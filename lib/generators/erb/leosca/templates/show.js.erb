@@ -1,0 +1,9 @@
+var $dialog = $('<div></div>')
+    .html("<%%= escape_javascript(render('show'))%>")
+    .dialog({
+        autoOpen: false,
+        minHeight: 200,
+        minWidth: 400,
+        title: '<%%= "#{t('models.<%= singular_table_name %>')} #{@<%= singular_table_name %>.id}"%>'
+    });
+$dialog.dialog('open');

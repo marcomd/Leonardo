@@ -1,24 +1,36 @@
-require 'rails/generators/rails/resource/resource_generator'
+require 'rails/generators/rails/scaffold/scaffold_generator'
+require File.join(File.dirname(__FILE__), '../../leonardo')
 
 module Rails
   module Generators
-    class LeoscaGenerator < ResourceGenerator #metagenerator
+    class LeoscaGenerator < ::Rails::Generators::ScaffoldGenerator
+      include ::Leonardo::Nested
       #puts 'rails:leosca'
 
-      remove_hook_for :resource_controller
-      remove_class_option :actions
+      class_option :under, :type => :string, :default => "", :banner => "brand/category", :desc => "To nest a resource under another(s)"
+      class_option :leospace, :type => :string, :default => "", :banner => ":admin", :desc => "To nest a resource under namespace(s)"
 
-      class_option :stylesheets, :type => :boolean, :default => false, :desc => "Generate Stylesheets"
-      class_option :stylesheet_engine, :desc => "Engine for Stylesheets"
-
+      remove_hook_for :scaffold_controller
       hook_for :leosca_controller, :required => true
 
-      hook_for :assets do |assets|
-        invoke assets, [controller_name]
-      end
+      #Override
+      def add_resource_route
+        return if options[:actions].present?
 
-      hook_for :stylesheet_engine do |stylesheet_engine|
-        invoke stylesheet_engine, [controller_name] if options[:stylesheets] && behavior == :invoke
+        route_config = ""
+        route_config << plural_parent_resources.map{|m| "resources :#{m} do " }.join(" ") if nested?
+        route_config << base_namespaces.map{|m| "namespace :#{m} do " }.join(" ") if leospaced?
+        route_config << regular_class_path.map{|m| "namespace :#{m} do " }.join(" ")
+        route_config << <<-FILE.gsub(/^          /, '')
+          resources :#{file_name.pluralize} do
+              post :select,           :on => :collection
+              post :edit_multiple,    :on => :collection
+              put  :update_multiple,  :on => :collection
+              put  :create_multiple,  :on => :collection
+            end
+        FILE
+        route_config << " end" * (regular_class_path.size + plural_parent_resources.size + base_namespaces.size)
+        route route_config
       end
 
     end

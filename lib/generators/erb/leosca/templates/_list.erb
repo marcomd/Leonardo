@@ -1,11 +1,19 @@
+<%if pagination?%>
 <%%= paginate @<%= plural_table_name %>, :remote => remote %>
-<div class="separator"></div>
-
+<%end%>
+<%%= page_entries_info @<%= plural_table_name %>, t('models.<%= singular_table_name %>'), t('models.<%= plural_table_name %>') %>
+<%% if @<%= plural_table_name %>.any? -%>
+<%%= form_for :select, :url => select_<%= list_resources_path %>, :remote => false, :html => { :method => :post, :id => "form_select" } do |f| %>
 <table class='user' cellspacing='0'>
   <thead>
   <tr>
+    <th>
+      <%%= check_box_tag nil, nil, false, :class => "selector" %>
+      <%%= sortable :id, '#', remote<%= ", '#{underscore_resource_path(:parent_singular_resource_plural)}_path', '#{formatted_parent_resources("@")}'" if nested? %> %>
+    </th>
 <%- attributes.each do |attribute| -%>
-    <th><%%= t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %></th>
+<%- attr_name = case attribute.type when :references, :belongs_to then "#{attribute.name}_id" else attribute.name end -%>
+    <th><%%= sortable :<%= attr_name %>, t('attributes.<%= singular_table_name %>.<%= attribute.name %>'), remote<%= ", '#{underscore_resource_path(:parent_singular_resource_plural)}_path', '#{formatted_parent_resources("@")}'" if nested? %> %></th>
 <%- end -%>
     <th></th>
     <th></th>
@@ -13,38 +21,41 @@
   </tr>
   </thead>
   <tbody>
-<%% @<%= plural_table_name %>.each do |<%= singular_table_name %>| %>
+<%% @<%= plural_table_name %>.each do |<%= singular_table_name %>| -%>
   <tr id="tr<%%= <%= singular_table_name %>.id %>" class="<%%= cycle("odd", "even")%>">
-<%- attributes.each do |attribute| -%>
-    <%- case attribute.type
-        when :boolean -%>
-    <td><%%= <%= singular_table_name %>.<%= attribute.name %> ? style_image_tag("ico_v.png") : style_image_tag('ico_x.png') %></td>
-    <%- when :references, :belongs_to -%>
-    <%% link_name = <%= singular_table_name %>.<%= attribute.name %>.try(:name) || <%= singular_table_name %>.<%= attribute.name %>.try(:id) %>
-    <td><%%= link_to(link_name, <%= singular_table_name %>.<%= attribute.name %> ) %></td>
-    <%-	else -%>
-    <td><%%= <%= singular_table_name %>.<%= attribute.name %> %></td>
-    <%- end -%>
-<%- end -%>
-    <td><%%= link_to t(:show), <%= singular_table_name %> %></td>
-    <% if authorization? -%>
-    <%% if can? :update, <%= singular_table_name %> -%>
-    <% end -%>
-    <td><%%= link_to t(:edit), edit_<%= singular_table_name %>_path(<%= singular_table_name %>) %></td>
-    <% if authorization? -%>
-    <%% end -%>
-    <% end -%>
-    <% if authorization? -%>
-    <%% if can? :destroy, <%= singular_table_name %> -%>
-    <% end -%>
-    <td><%%= link_to t(:destroy), <%= singular_table_name %>, <%= key_value :confirm, "t(:sure?)" %>, <%= key_value :method, ":delete" %>, :remote => remote %></td>
-    <% if authorization? -%>
-    <%% end -%>
-    <% end -%>
+<%%= render 'row_index', :<%= singular_table_name %> => <%= singular_table_name %>, :remote => remote, :message => "" %>
   </tr>
-<%% end %>
+<%% end -%>
   </tbody>
 </table>
 
 <div class="separator"></div>
+<div style="clear:both;">
+<%- if authorization? -%>
+<%%- if can? :destroy, <%= class_name %> -%>
+<%- end -%>
+  <%%= f.submit t(:destroy).upcase, <%= key_value :confirm, "t(:sure?)" %>, :class=>'button small' %>
+<%- if authorization? -%>
+<%%- end -%>
+<%- end -%>
+<%- if authorization? -%>
+<%%- if can? :update, <%= class_name %> -%>
+<%- end -%>
+  <%%= f.submit t(:edit).upcase, {:class=>'button small'} %>
+<%- if authorization? -%>
+<%%- end -%>
+<%- end -%>
+<%- if authorization? -%>
+<%%- if can? :create, <%= class_name %> -%>
+<%- end -%>
+  <%%= f.submit t(:copy).upcase, {:class=>'button small'} %>
+<%- if authorization? -%>
+<%%- end -%>
+<%- end -%>
+</div>
+<%% end -%>
+<div class="separator"></div>
+<%% end -%>
+<%- if pagination? -%>
 <%%= paginate @<%= plural_table_name %>, :remote => remote %>
+<%- end -%>

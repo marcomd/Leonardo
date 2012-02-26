@@ -1,37 +1,33 @@
-require 'rails/generators/resource_helpers'
+require 'rails/generators/rails/scaffold_controller/scaffold_controller_generator'
+require File.join(File.dirname(__FILE__), '../../leonardo')
 
 WINDOWS = (RUBY_PLATFORM =~ /dos|win32|cygwin/i) || (RUBY_PLATFORM =~ /(:?mswin|mingw)/)
 CRLF = WINDOWS ? "\r\n" : "\n"
 
 module Rails
   module Generators
-    class LeoscaControllerGenerator < NamedBase
-      include ResourceHelpers
+    class LeoscaControllerGenerator < ::Rails::Generators::ScaffoldControllerGenerator
+      include ::Leonardo::Leosca
+      include ::Leonardo::Nested
+      include ::Leonardo::Nested::Test
       #puts 'rails:leosca_controller'
 
       source_root File.expand_path('../templates', __FILE__)
       argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"
-      class_option :seeds, :type => :boolean, :default => true, :description => "Create seeds to run with rake db:seed"
-      class_option :seeds_elements, :type => :string, :default => "30", :description => "Choose seeds elements", :banner => "NUMBER OF ARRAY ELEMENTS"
-      class_option :remote, :type => :boolean, :default => true, :description => "Enable ajax. You can also do later set remote to true into index view."
+      class_option :seeds, :type => :boolean, :default => true, :desc => "Create seeds to run with rake db:seed"
+      class_option :seeds_elements, :type => :string, :default => "30", :desc => "Choose seeds elements", :banner => "NUMBER"
+      class_option :remote, :type => :boolean, :default => true, :desc => "Enable ajax. You can also do later set remote to true into index view."
+      class_option :under, :type => :string, :default => "", :banner => "brand/category", :desc => "To nest a resource under another(s)"
+      class_option :leospace, :type => :string, :default => "", :banner => ":admin", :desc => "To nest a resource under namespace(s)"
+      class_option :auth_class, :type => :boolean, :default => 'user', :desc => "Set the authentication class name"
 
-
-      check_class_collision :suffix => "Controller"
-
-      class_option :orm, :banner => "NAME", :type => :string, :required => true,
-                         :desc => "ORM to generate the controller for"
-
+      #Override
       def create_controller_files
-        template 'controller.rb', File.join('app/controllers', class_path, "#{controller_file_name}_controller.rb")
+        template 'controller.rb', File.join('app/controllers', class_path, base_namespaces, "#{controller_file_name}_controller.rb")
       end
 
-      hook_for :template_engine, :as => :leosca
-      hook_for :test_framework, :as => :scaffold
-
-      # Invoke the helper using the controller name (pluralized)
-      hook_for :helper, :as => :scaffold do |invoked|
-        invoke invoked, [ controller_name ]
-      end
+      #Override
+      hook_for :template_engine, :test_framework, :as => :leosca
 
       def update_yaml_locales
         #Inject model and attributes name into yaml files for i18n
@@ -46,17 +42,23 @@ module Rails
           inject_into_file file, :after => "#Attributes zone - do not remove#{CRLF}" do
             content = "      #{file_name}:#{CRLF}"
             attributes.each do |attribute|
-              content << "        #{attribute.name}: \"#{camel_case attribute.name}\"#{CRLF}"
+              content << "        #{attribute.name}: \"#{attribute.name.humanize}\"#{CRLF}"
             end
             content << "        op_new: \"New #{singular_table_name}\"#{CRLF}"
             content << "        op_edit: \"Editing #{singular_table_name}\"#{CRLF}"
-            content << "        op_index: \"Listing #{plural_table_name}\"#{CRLF}"
+            content << "        op_edit_multiple: \"Editing #{plural_table_name}\"#{CRLF}"
+            content << "        op_copy: \"Creating new #{plural_table_name}\"#{CRLF}"
+            if nested?
+              content << "        op_index: \"Listing #{plural_table_name} belongings to %{parent} %{name}\"#{CRLF}"
+            else
+              content << "        op_index: \"Listing #{plural_table_name}\"#{CRLF}"
+            end
             content
           end
 
           #Model name
           inject_into_file file, :after => "models: &models#{CRLF}" do
-            <<-FILE.gsub(/^    /, '')
+            <<-FILE.gsub(/^      /, '')
             #{file_name}: "#{file_name.capitalize}"
             #{controller_name}: "#{controller_name.capitalize}"
             FILE
@@ -66,17 +68,18 @@ module Rails
           inject_into_file file, :after => "    hints:#{CRLF}" do
             content = "      #{file_name}:#{CRLF}"
             attributes.each do |attribute|
+              attr_name = attribute.name.humanize
               case attribute.type
               when :integer, :decimal, :float
-                content << "        #{attribute.name}: \"Fill the #{attribute.name} with a#{"n" if attribute.type == :integer} #{attribute.type.to_s} number\"#{CRLF}"
+                content << "        #{attribute.name}: \"Fill the #{attr_name} with a#{"n" if attribute.type == :integer} #{attribute.type.to_s} number\"#{CRLF}"
               when :boolean
-                content << "        #{attribute.name}: \"Select if #{attribute.name} or not\"#{CRLF}"
+                content << "        #{attribute.name}: \"Select if this #{file_name} should be #{attr_name} or not\"#{CRLF}"
               when :string, :text
-                content << "        #{attribute.name}: \"Choose a good #{attribute.name} for this #{file_name}\"#{CRLF}"
-              when :date, :datetime, :time
-                content << "        #{attribute.name}: \"Choose a #{attribute.type.to_s} for #{attribute.name}\"#{CRLF}"
+                content << "        #{attribute.name}: \"Choose a good #{attr_name} for this #{file_name}\"#{CRLF}"
+              when :date, :datetime, :time, :timestamp
+                content << "        #{attribute.name}: \"Choose a #{attribute.type.to_s} for #{attr_name}\"#{CRLF}"
               else
-                content << "        #{attribute.name}: \"Choose a #{attribute.name}\"#{CRLF}"
+                content << "        #{attribute.name}: \"Choose a #{attr_name}\"#{CRLF}"
               end
             end
             content
@@ -85,34 +88,30 @@ module Rails
         end
       end
 
-      def update_layout_html
-        file = "app/views/layouts/_#{CONFIG[:default_style]}.html.erb"
-        inject_into_file file, :after => "<!-- Insert below other elements -->#{CRLF}" do
-          <<-FILE.gsub(/^          /, '')
-                      #{"<% if can? :read, #{class_name} -%>" if authorization?}
-                      <li class="<%= controller.controller_path == '#{controller_name}' ? 'active' : '' %>"><a href="<%= #{controller_name}_path %>"><%= t('models.#{controller_name}') %></a></li>
-                      #{"<% end -%>" if authorization?}
-          FILE
-        end if File.exists?(file)
-      end
-
       def update_ability_model
         file = "app/models/ability.rb"
         return unless File.exists?(file)
         inject_into_file file, :before => "  end\nend" do
           <<-FILE.gsub(/^      /, '')
-          #can :read, #{class_name} if user.new_record? #Guest
-          can :read, #{class_name} if user.role? :guest #Registered guest
-          if user.role? :user
+          #can :read, #{class_name} if #{options[:auth_class]}.new_record? #Guest
+          can :read, #{class_name} if #{options[:auth_class]}.role? :guest #Registered guest
+          if #{options[:auth_class]}.role? :user
             can :read, #{class_name}
-            can :update, #{class_name}
             can :create, #{class_name}
+            can [:update, :destroy, :select, :create_multiple, :update_multiple], #{class_name} do |#{singular_table_name}|
+              if defined?(#{singular_table_name}.#{options[:auth_class]}_id)
+                #{singular_table_name}.#{options[:auth_class]}_id == #{options[:auth_class]}.id
+              else
+                true
+              end
+            end
           end
-          if user.role? :manager
+          if #{options[:auth_class]}.role? :manager
             can :read, #{class_name}
             can :update, #{class_name}
             can :create, #{class_name}
             can :destroy, #{class_name}
+            can [:select, :create_multiple, :update_multiple], #{class_name}
           end
 
           FILE
@@ -125,21 +124,7 @@ module Rails
         append_file file do
           items = []
           attributes.each do |attribute|
-            value = case attribute.type
-              when :boolean                 then :true
-              when :integer                 then "#"
-              when :float, :decimal         then "#.46"
-              when :references, :belongs_to then "#"
-              when :date                    then "'#{Time.now.strftime("%Y-%m-%d 00:00:00.000")}'"
-              when :datetime                then "'#{Time.now.strftime("%Y-%m-%d %H:%M:%S.000")}'"
-              when :time                    then "'#{Time.now.strftime("%H:%M:%S.000")}'"
-              else                               "'#{attribute.name.capitalize}\#'"
-            end
-            name = case attribute.type
-              when :references, :belongs_to then ":#{attribute.name}_id"
-              else                               ":#{attribute.name}"
-            end
-            items << " #{name} => #{value}"
+            items << attribute_to_hash(attribute)
           end
           row = "{ #{items.join(', ')} }"
 
@@ -153,18 +138,26 @@ module Rails
         end if File.exists?(file)
       end
 
-      protected
-      def authorization?
-        File.exists? "app/models/ability.rb"
+      def update_specs
+        file = "spec/spec_helper.rb"
+        return unless File.exists? file
+
+        file = "spec/factories.rb"
+        inject_into_file file, :before => "  ### Insert below here other your factories ###" do
+          items = []
+          attributes.each do |attribute|
+            items << attribute_to_factories(attribute)
+          end
+          <<-FILE.gsub(/^        /, '')
+
+          factory :#{singular_table_name} do |#{singular_table_name[0..0]}|
+        #{items.join(CRLF)}
+          end
+          FILE
+        end if File.exists?(file)
+
       end
-      def authentication?
-        return true if File.exists? "app/models/user.rb"
-        File.exists? "config/initializers/devise.rb"
-      end
-      def camel_case(str)
-        return str if str !~ /_/ && str =~ /[A-Z]+.*/
-        str.split('_').map { |i| i.capitalize }.join
-      end
+
     end
   end
 end

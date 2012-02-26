@@ -51,7 +51,7 @@ en:
     currency:
       format:
         # Where is the currency sign? %u is the currency unit, %n the number (default: $5.00)
-        format: "%u%n"
+        format: "%u %n"
         unit: "$"
         # These five are to override number.format and are optional
         separator: "."
@@ -178,10 +178,10 @@ en:
       # Default value for :prompt => true in FormOptionsHelper
       prompt: "Please select"
     # Default translation keys for submit FormHelper
-    submit:
-      create: 'Create %{model}'
-      update: 'Update %{model}'
-      submit: 'Save %{model}'
+    submit: &actions
+      create: "Create %{model}"
+      update: "Update"
+      submit: "Proceed"
 
   activerecord: &activerecord
     models: &models
@@ -190,18 +190,14 @@ en:
       created_at: "Created at"
       updated_at: "Updated at"
       #Attributes zone - do not remove
-    helpers:
-      submit:
-        create: "Create %{model}"
-        update: "Update %{model}"
+
   formtastic:
     titles:
     labels:
       <<: *attributes
     hints:
-    actions: &actions
-      create: "Create %{model}"
-      update: "Save changes"
+    actions:
+      <<: *actions
   authentication:
     sign_in: "Sign in"
     sign_in_with: "Sign in with"
@@ -220,14 +216,24 @@ en:
     current_password: "Current password"
     new_password: "New password"
 
-  unknown_request: "Sorry, this request is unkown and cannot be processed"
+  unknown_request: "Sorry, this request is unknown and cannot be processed"
   generic_error: "An error was occured and doesn't permit to execute this operation"
   permission_denied: "You don't have authorization to perform this request."
   created: "%{model} was successfully created."
   created_ko: "An error prohibited %{model} to be created."
+  created_multiple: "%{model} were successfully created."
+  created_multiple_ko: "An error prohibited %{model} to be created."
   updated: "%{model} was successfully updated."
   updated_ko: "An error prohibited %{model} to be updated."
+  updated_multiple: "%{model} were successfully updated."
+  updated_multiple_ko: "An error prohibited %{model} to be updated."
   deleted: "%{model} was successfully deleted."
+  deleted_ko: "An error prohibited %{model} to be deleted."
+  deleted_multiple: "%{model} were successfully deleted."
+  deleted_multiple_ko: "An error prohibited %{model} to be deleted."
+  search_found: "%{found} found"
+  search_not_found: "The search did not get any results"
+  select_rows_from_list: "Select the rows from the list before proceeding"
 
   <<: *activerecord
   <<: *actions
@@ -253,4 +259,5 @@ en:
   radio-yes: "Yes"
   radio-no: "No"
   radio-all: "All"
+  loading: "Loading..."
   choose_language: "Choose language"

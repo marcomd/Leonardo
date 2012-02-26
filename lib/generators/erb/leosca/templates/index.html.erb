@@ -1,28 +1,39 @@
 <%% secondary_navigation({:value => t(:list), :active => true},
-                        ({:value => link_to(t(:add), new_<%= singular_table_name %>_path)}<%= " if can?(:create, @#{singular_table_name})" if authorization? %>)
+                        ({:value => link_to(t(:add), <%= new_resource_path %> )}<%= " if can?(:create, @#{singular_table_name})" if authorization? %>)
 ) %>
 
-<%% title t('attributes.<%= singular_table_name %>.op_index') %>
+<%% title t('attributes.<%= singular_table_name %>.op_index'<%= ", {:parent => \"#{last_parent}\", :name => @#{last_parent}.try(:name) || @#{last_parent}.try(:id)}" if nested? -%>) %>
 
-<%% remote = <%= options.remote? %> %>
-<%%= form_for :<%= singular_table_name %>, :remote => remote, :html => { :method => :get, :id => "form_search" } do |f| %>
+<%% remote = @remote %>
+<%%= form_for <%= show_resource_path("@") %>, :remote => remote, :html => { :method => :get, :id => "form_search" } do |f| %>
 <div class="filter-container">
   <%- attributes.each do |attribute| -%>
   <div class="filter-field">
-    <b><%%= f.label :<%= attribute.name %>, t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %></b><br />
     <%- case attribute.type -%>
+    <%-	when :references, :belongs_to -%>
+        <%- unless nested? -%>
+    <b><%%= f.label :<%= attribute.name %>, t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %></b><br />
+        <%- end -%>
+    <%- else -%>
+    <b><%%= f.label :<%= attribute.name %>, t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %></b><br />
+    <%- end -%>
+
+    <%- case attribute.type -%>
+    <%-	when :references, :belongs_to -%>
+        <%- unless nested? -%>
+        <%%= f.collection_select :<%= attribute.name %>_id, <%= attribute.name.classify %>.all, :id, :name, {:prompt => true}, {:class => 'autosubmit'} %>
+        <%- end -%>
     <%-	when :boolean -%>
-        <%%= radio_button("<%= singular_table_name %>", "<%= attribute.name %>", "1", {:checked => (@<%= singular_table_name %>.<%= attribute.name %>)}) %><%%= label_tag "<%= singular_table_name %>_<%= attribute.name %>_1", t(:yes) %><br />
-        <%%= radio_button("<%= singular_table_name %>", "<%= attribute.name %>", "0", {:checked => (!@<%= singular_table_name %>.<%= attribute.name %>)}) %><%%= label_tag "<%= singular_table_name %>_<%= attribute.name %>_0", t(:no) %><br />
-        <%%= radio_button("<%= singular_table_name %>", "<%= attribute.name %>", "") %><%%= label_tag "<%= singular_table_name %>_<%= attribute.name %>_", t(:all) %>
+        <%%= radio_button("<%= singular_table_name %>", "<%= attribute.name %>", "1", {:checked => (@<%= singular_table_name %>.<%= attribute.name %>), :class => 'autosubmit'}) %><%%= label_tag "<%= singular_table_name %>_<%= attribute.name %>_1", t(:yes) %><br />
+        <%%= radio_button("<%= singular_table_name %>", "<%= attribute.name %>", "0", {:checked => (!@<%= singular_table_name %>.<%= attribute.name %>), :class => 'autosubmit'}) %><%%= label_tag "<%= singular_table_name %>_<%= attribute.name %>_0", t(:no) %><br />
+        <%%= radio_button("<%= singular_table_name %>", "<%= attribute.name %>", "", {:class => 'autosubmit'}) %><%%= label_tag "<%= singular_table_name %>_<%= attribute.name %>_", t(:all) %>
     <%-	when :text -%>
         <%%= f.text_field :<%= attribute.name %> %>
     <%-	when :date -%>
-        <%%= f.text_field :<%= attribute.name %><%=", :class => \"calendar\"" if jquery_ui?%> %>
+        <%%= f.text_field :<%= attribute.name %>, :class => "autosubmit<%=" calendar" if jquery_ui? %>" %>
     <%-	else -%>
         <%%= f.<%= attribute.field_type %> :<%= attribute.name %> %>
     <%- end -%>
-
   </div>
   <%- end -%>
   <div style="clear:both;">

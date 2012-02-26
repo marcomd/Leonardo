@@ -1,22 +1,22 @@
-require 'rails/generators/erb'
-require 'rails/generators/resource_helpers'
+require 'rails/generators/erb/scaffold/scaffold_generator'
+require File.join(File.dirname(__FILE__), '../../leonardo')
 
 module Erb
   module Generators
-    class LeoscaGenerator < Base
-      include Rails::Generators::ResourceHelpers
+    class LeoscaGenerator <  ::Erb::Generators::ScaffoldGenerator
+      include ::Leonardo::Leosca
+      include ::Leonardo::Nested
       #puts 'erb:leosca'
 
       source_root File.expand_path('../templates', __FILE__)
-      argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"
       class_option :authorization, :type => :boolean, :default => true, :description => "Add code to manage authorization with cancan"
       class_option :remote, :type => :boolean, :default => true, :description => "Enable ajax. You can also do later set remote to true into index view."
       class_option :formtastic, :type => :boolean, :default => true, :description => "Create forms to manage with formtastic gem"
+      class_option :under, :type => :string, :default => "", :banner => "brand/category", :desc => "To nest a resource under another(s)"
+      class_option :leospace, :type => :string, :default => "", :banner => ":admin", :desc => "To nest a resource under namespace(s)"
+      class_option :auth_class, :type => :boolean, :default => 'user', :desc => "Set the authentication class name"
 
-      def create_root_folder
-        empty_directory File.join("app/views", controller_file_path)
-      end
-
+      #override
       def copy_view_files
         available_views.each do |view|
           filenames = filenames_all_formats(view, source_paths)
@@ -32,16 +32,67 @@ module Erb
             end
             filename_source = filename unless search_into_subfolder
 
-            template filename_source, File.join("app/views", controller_file_path, filename)
+            template filename_source, File.join("app/views", base_namespaces, controller_file_path, filename)
           end
         end
+      end
 
+      def update_layout_html
+        file = "app/views/layouts/_#{CONFIG[:default_style]}.html.erb"
+        if nested?
+          inject_into_file file, :before => "            <!-- Insert above here other #{last_parent} elements -->" do
+            <<-FILE.gsub(/^              /, '')
+                          #{"<% if can?(:read, #{class_name}) && controller.controller_path == '#{controller_name}' -%>" if authorization?}
+                          <li class="active"><%= t('models.#{plural_table_name}') %></li>
+                          <!-- Insert above here other #{singular_table_name} elements -->
+                          #{"<% end -%>" if authorization?}
+            FILE
+          end if File.exists?(file)
+        #elsif leospaced?
+        #  inject_into_file file, :before => "            <!-- Insert above other elements -->" do
+        #    <<-FILE.gsub(/^              /, '')
+        #                  #{"<% if #{options.auth_class}_signed_in? && current_#{options.auth_class}.role?(#{last_namespace.inspect}) -%>" if authorization?}
+        #                  <li class="<%= controller.controller_path == '#{last_namespace}' ? 'active' : '' %>"><a href="<%= #{last_namespace}_index_path %>">#{last_namespace.capitalize}</a></li>
+        #                  <!-- Insert above here other #{last_namespace} elements -->
+        #                  #{"<% end -%>" if authorization?}
+        #    FILE
+        #  end if File.exists?(file)
+        #  inject_into_file file, :before => "            <!-- Insert above other elements -->" do
+        #    <<-FILE.gsub(/^              /, '')
+        #                  #{"<% if can?(:read, #{class_name}) -%>" if authorization?}
+        #                  <li class="<%= controller.controller_path == '#{formatted_namespace_path}#{controller_name}' ? 'active' : '' %>"><a href="<%= #{list_resources_path} %>"><%= t('models.#{plural_table_name}') %></a></li>
+        #                  <!-- Insert above here other #{singular_table_name} elements -->
+        #                  #{"<% end -%>" if authorization?}
+        #    FILE
+        #  end if File.exists?(file)
+        else
+          inject_into_file file, :before => "            <!-- Insert above other elements -->" do
+            <<-FILE.gsub(/^            /, '')
+                        #{"<% if can?(:read, #{class_name}) -%>" if authorization?}
+                        <li class="<%= controller.controller_path == '#{formatted_namespace_path}#{controller_name}' ? 'active' : '' %>"><a href="<%= #{list_resources_path} %>"><%= t('models.#{plural_table_name}') %></a></li>
+                        <!-- Insert above here other #{singular_table_name} elements -->
+                        #{"<% end -%>" if authorization?}
+            FILE
+          end if File.exists?(file)
+        end
+      end
+
+      def update_parent_views
+        return unless nested?
+        file = "app/views/#{plural_last_parent}/_row_index.html.erb"
+        inject_into_file file, :before => "<!-- Manage section, do not remove this tag -->" do
+          <<-FILE.gsub(/^          /, '')
+          <td><%= link_to t('models.#{plural_table_name}'), #{list_resources_path_back} %></td>
+
+          FILE
+        end if File.exists?(file)
       end
 
     protected
 
+      #Override
       def available_views
-        %w(index edit show new _form _list destroy)
+        %w(index edit edit_multiple copy show new _form _form_multiple _fields destroy _show _list _row_index select)
       end
 
       def filenames_all_formats(name, paths=[], formats=[:html, :js, nil])
@@ -61,16 +112,6 @@ module Erb
         [name, format, parser].compact.join(".")
       end
 
-      def authorization?
-        File.exists? "app/models/ability.rb"
-      end
-      def formtastic?
-        return false unless options.formtastic?
-        File.exists? "config/initializers/formtastic.rb"
-      end
-      def jquery_ui?
-        File.exists? "vendor/assets/javascripts/jquery-ui"
-      end
     end
   end
 end

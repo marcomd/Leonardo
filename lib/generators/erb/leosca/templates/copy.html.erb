@@ -1,0 +1,7 @@
+<%% secondary_navigation({:value => link_to(t(:list), <%= list_resources_path %>)},
+                        ({:value => link_to(t(:add), <%= new_resource_path %>)}<%= " if can?(:create, #{class_name})" if authorization? %>)
+) %>
+
+<%% title t('attributes.<%= singular_table_name %>.op_copy') %>
+
+<%%= render 'form_multiple', :path => create_multiple_<%= list_resources_path %> %>

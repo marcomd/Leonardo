@@ -1,3 +1,106 @@
+1.9.0 (December 13th, 2011) Marco Mastrodonato
+* Specs updated, all green.
+
+
+TODO:
+* Model: Create name attribute for every one that does not have
+* Handle eager loading including child resources
+* Add user management
+
+
+
+1.9.0.beta2 (December 9th, 2011) Marco Mastrodonato
+* Specs updated
+* Little improvements
+
+
+
+1.9.0.beta1 (November 30th, 2011) Marco Mastrodonato
+* Lists: Added multiple selection to combine with massive operation
+* Lists: Added copy operation to create new items from existing. It works for multiple rows as well.
+* Data forms: fields moved into new partial to share with multiple operation
+* Little improvements
+
+
+
+1.8.4 (November 9th, 2011) Marco Mastrodonato
+* Fixed a bug in the list view when was used option --under
+* Now is possible to sort also by ID
+* Specs updated, all green
+
+
+
+1.8.3 (November 8th, 2011) Marco Mastrodonato
+* Controller/sort_column => Fixed an issue with multiple tables
+* Dev users are now added by rake db:seed, no more by migration
+
+
+
+1.8.2 (October 10th, 2011) Marco Mastrodonato
+* List: Added id as first column
+* Replaced String.any? with String.size>0 for ruby 1.9.2 support
+
+
+
+1.8.1 (October 10th, 2011) Marco Mastrodonato
+* Updated rspec to pass index view test with two new controller helpers
+* Date managed with datepicker are now in year-month-day format and now works with sqlite3
+* Added autosubmit class by default. A new function in custom.js let you to autosubmit searches on filter fields change event
+
+
+
+1.8.0 (October 7th, 2011) Marco Mastrodonato
+* Added sortable columns
+
+
+
+1.7.2 (October 5th, 2011) Marco Mastrodonato
+* Updated formtastic support to version 2.0
+* Updated template.rb
+
+
+
+1.7.1 (October 3th, 2011) Marco Mastrodonato
+* Fixed a layout issue
+
+
+
+1.7.0 (September 28th, 2011) Marco Mastrodonato
+* New feature to add a resource management within a namescape. Unlike the original way (rails g leosca admin/resource ...which remains available), the resource is not under the namespace but only its management so you could create one for several kind of users. Try it adding the new option like this example: --leospace=admin
+* Huge code improvements
+
+
+
+1.6.1 (September 20th, 2011) Marco Mastrodonato
+* Improved ajax show title
+* List resource: the link to parent show resource is now ajax (if remote = true)
+* Minor bug fix
+
+
+
+1.6.0 (September 16th, 2011) Marco Mastrodonato
+* Nested resource: use new option rails g leosca product --under=category field:type
+* Improved views data format
+* Added ajax mode for show view managed by jquery-ui dialog
+* Updated specs for namespaced resource and other improvements
+* Several little improvements
+
+
+
+1.5.0 (September 6th, 2011) Marco Mastrodonato
+* Added Rspec support with requests to check ajax => All green if you use formtastic views (associations with select)
+* New template
+* Little improvements
+
+
+
+1.4.1 (August 25th, 2011) Marco Mastrodonato
+* Autocheck to exclude pagination from views and controller
+* Fixed the template.rb to generate rspec:install and added :development to group as well as :test. Now if you choose to use rspec, leosca will generate rspec test.
+* Added leolay:install to copy generator under project folder to be able to customize it like leosca:install
+
+
+
 1.4.0 (August 24th, 2011) Marco Mastrodonato
 * New file custom.js to fill with your javascripts and use application.js as manifest file
 * Two new files under vendor/assets folder: vendor.js and vendor.css to use as manifest file

@@ -1,7 +1,17 @@
-#This is a Rails 3.1.x template
-#Written by Marco Mastrodonato  27/07/2011
-#
-# USAGE: rails new yourapp -m template.rb
+#########################################################
+# 2011 Marco Mastrodonato(c)
+# This is a Rails 3.1 template to use with leonardo gem
+# https://rubygems.org/gems/leonardo
+# 
+# USAGE: rails new yourappname -m template.rb
+# 
+# -------------------------------------------------------
+# 08-11-2011: Add roles_mask migration for cancan gem
+# 27-10-2011: Replaced String.any? with String.size>0 for ruby 1.9.2 support
+# 21-10-2011: Davide L. - Added folder creation 'vendor/assets/javascripts/include/' for linux compatibility
+# 05-10-2011: Added ajax option
+# 25-08-2011: Added rspec generation
+#########################################################
 
 puts '*' * 40
 puts "* Processing template..."
@@ -21,7 +31,8 @@ if use_git
   EOS
 end
 
-gem 'kaminari' if yes?("Pagination ?")
+pagination = yes?("Pagination ?")
+gem 'kaminari' if pagination
 
 gem 'paperclip' if yes?("Attachment ?")
 
@@ -31,22 +42,21 @@ gem 'state_machine' if yes?("Do you have to handle states ?")
 
 formtastic = yes?("Formtastic ?")
 if formtastic
-  #gem 'justinfrench-formtastic', :lib => 'formtastic', :source => 'http://gems.github.com'
-  #rake "gems:install" if install_gem
-
-  #A Rails FormBuilder DSL (with some other goodies) to make it far easier to create beautiful, semantically rich, syntactically awesome, readily stylable and wonderfully accessible HTML forms in your Rails applications.
   gem 'formtastic'
   gem 'validation_reflection'
 end
 
-if yes?("Add testing framework ?")
-  gem 'rspec-rails', :group => :test
+rspec = yes?("Add rspec as testing framework ?")
+if rspec
+  gem 'rspec-rails', :group => [:test, :development]
   gem 'capybara', :group => :test
   gem 'launchy', :group => :test
+  gem 'database_cleaner', :group => :test
+  gem 'factory_girl_rails', :group => :test
 end
 
 model_name = nil
-devise = yes?("Would you like to install Devise?")
+devise = yes?("Would you install Devise?")
 if devise
   gem 'devise'
   model_name = ask(" What would you like the user model to be called? [user]")
@@ -56,11 +66,14 @@ end
 cancan = yes?("Authorization ?")
 gem 'cancan' if cancan
 
+ajax = yes?("Would you enhance ajax ?")
+gem "rails3-jquery-autocomplete" if ajax
+
 #home = yes?("Generate controller home ? (raccomanded)")
 home = true
 
 leolay = yes?("Layout ?")
-leolay_main_color = leolay_second_color = nil
+leolay_main_color = leolay_second_color = ""
 if leolay
   gem 'leonardo'
   puts " Enter colors, for example:"
@@ -69,7 +82,11 @@ if leolay
   leolay_second_color = ask(" Choose secondary color [blank=default color]:")
 end
 
-run "bundle install"
+run "bundle install" if yes?("Bundle install ?")
+
+generate "kaminari:config" if pagination
+
+generate "rspec:install" if rspec
 
 generate "formtastic:install" if formtastic
 
@@ -79,16 +96,46 @@ if devise
   #generate("devise:views") #not use since leolay copies custom views
 end
 
-generate "cancan:ability" if cancan
+if cancan
+  generate "cancan:ability"
+  generate "migration", "AddRolesMaskToUsers", "roles_mask:integer"
+end
+
+generate "autocomplete:install" if ajax
+
+####################################################################
+#     F   I   X
+####################################################################
+source_paths << File.join(File.dirname(__FILE__), app_name)
+
+if formtastic
+  path = "lib/templates/erb/"
+  remove_file path if File.exists?(path)
+end
+
+if ajax
+  path = "public/javascripts/"
+  file = "autocomplete-rails.js"
+  pathfile = "#{path}#{file}"
+  if File.exists? pathfile
+    copy_file pathfile, "vendor/assets/javascripts/include/#{file}"
+    remove_file path
+  end
+end
+####################################################################
 
 if leolay
   generate  "leolay",
-            (leolay_main_color && leolay_main_color.any? ? leolay_main_color : ""),
-            (leolay_second_color && leolay_second_color.any? ? leolay_second_color : ""),
+            "cloudy",
+            ("--main_color=#{leolay_main_color}" if leolay_main_color.size>0),
+            ("--second_color=#{leolay_second_color}" if leolay_second_color.size>0),
             (cancan ? "" : "--skip-authorization"),
             (devise ? "" : "--skip-authentication"),
-	          (formtastic ? "" : "--skip-formtastic")
+            (ajax ? "" : "--skip-jquery_ui"),
+            (formtastic ? "" : "--skip-formtastic")
 end
+
+generate "autocomplete:install" if ajax
 
 if home
   generate "controller", "home", "index"
@@ -99,6 +146,7 @@ File.unlink "public/index.html"
 
 rake "db:create:all"
 rake "db:migrate"
+rake "db:seed"
 
 #rake "gems:unpack" if yes?("Unpack to vendor/gems ?")
 

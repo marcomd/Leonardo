@@ -25,6 +25,7 @@ it:
     passwords:
       send_instructions: "Riceverai un messaggio email con le istruzioni per reimpostare la tua password entro qualche minuto."
       updated: "La tua password è stata cambiata. Ora sei collegato."
+      updated_not_active: "La tua password è stata cambiata."
       send_paranoid_instructions: "Se il tuo indirizzo e-mail esiste nel nostro database, riceverai un link per il recupero della password."
     confirmations:
       send_instructions: "Riceverai un messaggio email con le istruzioni per confermare il tuo account entro qualche minuto."
@@ -35,6 +36,10 @@ it:
       inactive_signed_up: 'Ti sei registrato, ma non sei collegato perchè il tuo account è %{reason}.'
       updated: "Il tuo account è stato aggiornato."
       destroyed: "Arrivederci! L'account è stato cancellato. Speriamo di rivederti presto."
+      reasons:
+        inactive: "Inattivo"
+        unconfirmed: "Non confermato"
+        locked: "Bloccato"
     unlocks:
       send_instructions: "Riceverai un messaggio email con le istruzioni per sbloccare il tuo account entro qualche minuto."
       unlocked: "Il tuo account è stato correttamente sbloccato. Ora sei collegato."
