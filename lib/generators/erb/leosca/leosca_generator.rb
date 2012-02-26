@@ -79,10 +79,17 @@ module Erb
 
       def update_parent_views
         return unless nested?
+<<<<<<< HEAD
         file = "app/views/#{plural_last_parent}/_row_index.html.erb"
         inject_into_file file, :before => "<!-- Manage section, do not remove this tag -->" do
           <<-FILE.gsub(/^          /, '')
           <td><%= link_to t('models.#{plural_table_name}'), #{list_resources_path_back} %></td>
+=======
+        file = "app/views/#{plural_last_parent}/_list.erb"
+        inject_into_file file, :before => "<!-- Manage section, do not remove this tag -->" do
+          <<-FILE.gsub(/^          /, '')
+              <td><%= link_to t('models.#{plural_table_name}'), #{list_resources_path_back} %></td>
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
 
           FILE
         end if File.exists?(file)
@@ -92,7 +99,11 @@ module Erb
 
       #Override
       def available_views
+<<<<<<< HEAD
         %w(index edit edit_multiple copy show new _form _form_multiple _fields destroy _show _list _row_index select)
+=======
+        %w(index edit show new _form _list destroy _show)
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
       end
 
       def filenames_all_formats(name, paths=[], formats=[:html, :js, nil])

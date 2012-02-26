@@ -338,6 +338,15 @@ class LeolayGenerator < Rails::Generators::Base
     copy_file file, file
     file = "spec/helpers/application_helpers_spec.rb"
     copy_file file, file
+<<<<<<< HEAD
+=======
+    #file = "lib/templates/rspec/scaffold"
+    #directory file, file
+    #file = "lib/templates/rspec/scaffold"
+    #directory file, file
+    #file = "lib/generators/rspec/scaffold"
+    #directory file, file
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
 
   end
 

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <%if pagination?%>
 <%%= paginate @<%= plural_table_name %>, :remote => remote %>
 <%end%>
@@ -58,4 +59,52 @@
 <%% end -%>
 <%- if pagination? -%>
 <%%= paginate @<%= plural_table_name %>, :remote => remote %>
+=======
+<%- if pagination? %>
+<%%= paginate @<%= plural_table_name %>, :remote => remote %>
+<%- end %>
+<div class="separator"></div>
+
+<table class='user' cellspacing='0'>
+  <thead>
+  <tr>
+<%- attributes.each do |attribute| -%>
+    <th><%%= t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %></th>
+<%- end -%>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+<%% @<%= plural_table_name %>.each do |<%= singular_table_name %>| -%>
+  <tr id="tr<%%= <%= singular_table_name %>.id %>" class="<%%= cycle("odd", "even")%>">
+<%- attributes.each do |attribute| -%>
+    <td><%= attribute_to_erb(attribute, singular_table_name) -%></td>
+<%- end -%>
+    <!-- Manage section, do not remove this tag -->
+    <td><%%= link_to t(:show), <%= show_resource_path %><%= ", :remote => remote" if jquery_ui? %> %></td>
+    <%- if authorization? -%>
+    <%%- if can? :update, <%= singular_table_name %> -%>
+    <%- end -%>
+    <td><%%= link_to t(:edit), <%= edit_resource_path %> %></td>
+    <%- if authorization? -%>
+    <%%- end -%>
+    <%- end -%>
+    <%- if authorization? -%>
+    <%%- if can? :destroy, <%= singular_table_name %> -%>
+    <%- end -%>
+    <td><%%= link_to t(:destroy), <%= destroy_resource_path %>, <%= key_value :confirm, "t(:sure?)" %>, <%= key_value :method, ":delete" %>, :remote => remote %></td>
+    <%- if authorization? -%>
+    <%%- end -%>
+    <%- end -%>
+  </tr>
+<%% end -%>
+  </tbody>
+</table>
+
+<div class="separator"></div>
+<%- if pagination? -%>
+<%%= paginate @<%= plural_table_name %>, :remote => remote %>
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
 <%- end -%>

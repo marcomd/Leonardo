@@ -1,5 +1,15 @@
 require 'spec_helper'
+<<<<<<< HEAD
 <%- check_attr_to_have, check_attr_to_not_have = get_attr_to_match -%>
+=======
+<%-
+items = []
+attributes.each do |attribute|
+  items << "        #{attribute_to_requests(attribute)}"
+end
+check_attr_to_have, check_attr_to_not_have = get_attr_to_match
+-%>
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
 
 describe "<%= class_name.pluralize %>" do
   describe "GET /<%= table_name %>" do
@@ -17,12 +27,17 @@ describe "<%= class_name.pluralize %>" do
         <%= singular_table_name %> = Factory.build(:<%= singular_table_name %>)
         visit <%= new_resource_path_test %>
         <%= "login_view_as(:user_admin)" if authentication? %>
+<<<<<<< HEAD
 <%= fill_form_with_values.join(CRLF) %>
+=======
+<%= items.join(CRLF) %>
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
         click_button "Create #{I18n.t('models.<%= singular_table_name %>')}"
         #save_and_open_page #uncomment to debug
         page.should have_content(I18n.t(:created, :model => I18n.t('models.<%= singular_table_name %>')))
         page.should <%= check_attr_to_have %>
       end
+<<<<<<< HEAD
 
       it "copy one <%= singular_table_name %>" do
         <%= singular_table_name %> = Factory(:<%= singular_table_name %>)
@@ -135,6 +150,8 @@ describe "<%= class_name.pluralize %>" do
         click_button I18n.t(:destroy).upcase
         page.should have_content(I18n.t(:deleted_multiple, :model => "#{<%= plural_table_name %>.size} #{I18n.t('models.<%= plural_table_name %>')}"))
       end
+=======
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
     end
 
     describe "Check ajax /<%= plural_table_name %>" do
@@ -143,7 +160,11 @@ describe "<%= class_name.pluralize %>" do
         visit <%= list_resources_path_test %>
         <%= "login_view_as(:user_manager)" if authentication? %>            #authentication
         page.find("div#list").should <%= check_attr_to_have %>
+<<<<<<< HEAD
         click_link "#{<%= singular_table_name %>.id}"
+=======
+        click_link I18n.t(:show)
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
         page.find("div.ui-dialog").should <%= check_attr_to_have %>         #checks if dialog is appeared
         click_link "close"                                              #close dialog
         !page.find("div.ui-dialog").visible?                            #checks if dialog has been closed

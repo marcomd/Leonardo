@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 1.9.0 (December 13th, 2011) Marco Mastrodonato
 * Specs updated, all green.
 
@@ -66,6 +67,9 @@ TODO:
 
 
 1.7.0 (September 28th, 2011) Marco Mastrodonato
+=======
+1.7.0 (October 1th, 2011) Marco Mastrodonato
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
 * New feature to add a resource management within a namescape. Unlike the original way (rails g leosca admin/resource ...which remains available), the resource is not under the namespace but only its management so you could create one for several kind of users. Try it adding the new option like this example: --leospace=admin
 * Huge code improvements
 

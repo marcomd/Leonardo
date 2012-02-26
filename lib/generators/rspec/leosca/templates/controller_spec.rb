@@ -168,7 +168,11 @@ describe <%= leospaced? ? (base_namespaces << controller_class_name).join('/').c
     <%- if authorization? -%>
     describe "without authorization" do
       it "destroys the requested <%= ns_file_name %>" do
+<<<<<<< HEAD
         <%= "login_controller_as(:user_guest)" if authentication? %>
+=======
+        <%= "login_controller_as(:user)" if authentication? %>
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
         <%= file_name %> = Factory(:<%= file_name %>)
         expect {
           delete :destroy, :id => <%= file_name %>.id.to_s<%= nested_params_http_request %>

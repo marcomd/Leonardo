@@ -6,10 +6,13 @@
 # USAGE: rails new yourappname -m template.rb
 # 
 # -------------------------------------------------------
+<<<<<<< HEAD
 # 08-11-2011: Add roles_mask migration for cancan gem
 # 27-10-2011: Replaced String.any? with String.size>0 for ruby 1.9.2 support
 # 21-10-2011: Davide L. - Added folder creation 'vendor/assets/javascripts/include/' for linux compatibility
 # 05-10-2011: Added ajax option
+=======
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
 # 25-08-2011: Added rspec generation
 #########################################################
 
@@ -88,6 +91,10 @@ generate "kaminari:config" if pagination
 
 generate "rspec:install" if rspec
 
+generate "kaminari:config" if pagination
+
+generate "rspec:install" if rspec
+
 generate "formtastic:install" if formtastic
 
 if devise
@@ -127,11 +134,18 @@ end
 if leolay
   generate  "leolay",
             "cloudy",
+<<<<<<< HEAD
             ("--main_color=#{leolay_main_color}" if leolay_main_color.size>0),
             ("--second_color=#{leolay_second_color}" if leolay_second_color.size>0),
             (cancan ? "" : "--skip-authorization"),
             (devise ? "" : "--skip-authentication"),
             (ajax ? "" : "--skip-jquery_ui"),
+=======
+            ("--main_color=#{leolay_main_color}" if leolay_main_color.any?),
+            ("--second_color=#{leolay_second_color}" if leolay_second_color.any?),
+            (cancan ? "" : "--skip-authorization"),
+            (devise ? "" : "--skip-authentication"),
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
             (formtastic ? "" : "--skip-formtastic")
 end
 

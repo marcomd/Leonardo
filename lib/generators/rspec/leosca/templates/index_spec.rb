@@ -45,7 +45,10 @@ describe "<%= formatted_namespace_path %><%= ns_table_name %>/index.html.<%= opt
     @records = assign(:<%= table_name %>, FactoryGirl.create_list(:<%= ns_file_name %>, 2<%= str_parents_create %>) )
     <%- end -%>
     assign(:<%= ns_file_name %>, Factory.build(:<%= ns_file_name %>) )
+<<<<<<< HEAD
     view.stub(:sort_column, :sort_direction)
+=======
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
   end
 
   it "renders a list of <%= ns_table_name %>" do

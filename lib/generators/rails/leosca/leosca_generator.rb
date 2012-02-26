@@ -21,6 +21,7 @@ module Rails
         route_config << plural_parent_resources.map{|m| "resources :#{m} do " }.join(" ") if nested?
         route_config << base_namespaces.map{|m| "namespace :#{m} do " }.join(" ") if leospaced?
         route_config << regular_class_path.map{|m| "namespace :#{m} do " }.join(" ")
+<<<<<<< HEAD
         route_config << <<-FILE.gsub(/^          /, '')
           resources :#{file_name.pluralize} do
               post :select,           :on => :collection
@@ -29,6 +30,9 @@ module Rails
               put  :create_multiple,  :on => :collection
             end
         FILE
+=======
+        route_config << "resources :#{file_name.pluralize}"
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
         route_config << " end" * (regular_class_path.size + plural_parent_resources.size + base_namespaces.size)
         route route_config
       end

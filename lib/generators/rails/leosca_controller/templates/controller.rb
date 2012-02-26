@@ -1,6 +1,9 @@
 <% module_namespacing do -%>
 class <%= leospaced? ? (base_namespaces << controller_class_name).join('/').camelize : controller_class_name %>Controller < ApplicationController
+<<<<<<< HEAD
   helper_method :sort_column, :sort_direction
+=======
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
   <%= "before_filter :authenticate_user!#{CRLF}" if authentication? -%>
   <%= "load_and_authorize_resource#{CRLF}" if authorization? -%>
   <%#= "before_filter :load_parents#{CRLF}" if nested? -%>
@@ -53,13 +56,21 @@ end
 
     end
 
+<<<<<<< HEAD
     conditions = [conditions_fields.join(' and ')] + conditions_values
+=======
+    conditions = conditions_fields.join(' and ').to_a + conditions_values
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
 
     request.format = :csv if params[:commit] == 'Csv'
     
     @<%= plural_table_name %> = case request.format
     when 'text/html', 'text/javascript'
+<<<<<<< HEAD
       <%= class_name %>.where(conditions).order("#{sort_column} #{sort_direction}")<%= ".page(params[:page])" if pagination? %>
+=======
+      <%= class_name %>.where(conditions).order(:id)<%= ".page(params[:page])" if pagination? %>
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
     else
       <%= class_name %>.where(conditions)
     end

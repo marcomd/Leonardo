@@ -1,5 +1,24 @@
 <%%= semantic_form_for(<%= form_resource_path %>) do |f| %>
+<<<<<<< HEAD
     <%%= render 'fields', :f => f, :<%= singular_table_name %> => @<%= singular_table_name %> %>
+=======
+    <%%= f.inputs do %>
+    <%- attributes.each do |attribute| -%>
+        <%- case attribute.type
+            when :references, :belongs_to  -%>
+        <%% if @<%= singular_table_name %>.new_record? -%>
+            <%%= f.input :<%= attribute.name %> if can?(:manage, <%=class_name %>) %>
+        <%% else -%>
+            <%%= f.input :<%= attribute.name %> %>
+        <%% end -%>
+        <%-	when :date -%>
+        <%%= f.input :<%= attribute.name %>, :as => :string, :input_html => { :class => 'calendar', :maxlength => 10 } %>
+        <%-	else -%>
+        <%%= f.input :<%= attribute.name %> %>
+        <%- end -%>
+    <%- end -%>
+    <%% end %>
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
     <%%= f.buttons do %>
       <%%= f.commit_button :button_html => { :class => "button large" } %>
     <%% end %>

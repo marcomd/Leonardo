@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <table>
 <%- attributes.each do |attribute| -%>
 
@@ -6,4 +7,14 @@
     <td><%= attribute_to_erb(attribute, "@#{singular_table_name}") %></td>
 </tr>
 <%- end -%>
+=======
+<table>
+<%- attributes.each do |attribute| -%>
+
+<tr>
+    <td><b><%%= t('attributes.<%= singular_table_name %>.<%= attribute.name %>') %>:</b></td>
+    <td><%= attribute_to_erb(attribute, "@#{singular_table_name}") %></td>
+</tr>
+<%- end -%>
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
 </table>

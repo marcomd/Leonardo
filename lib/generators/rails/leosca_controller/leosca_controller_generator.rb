@@ -19,7 +19,10 @@ module Rails
       class_option :remote, :type => :boolean, :default => true, :desc => "Enable ajax. You can also do later set remote to true into index view."
       class_option :under, :type => :string, :default => "", :banner => "brand/category", :desc => "To nest a resource under another(s)"
       class_option :leospace, :type => :string, :default => "", :banner => ":admin", :desc => "To nest a resource under namespace(s)"
+<<<<<<< HEAD
       class_option :auth_class, :type => :boolean, :default => 'user', :desc => "Set the authentication class name"
+=======
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
 
       #Override
       def create_controller_files
@@ -46,8 +49,11 @@ module Rails
             end
             content << "        op_new: \"New #{singular_table_name}\"#{CRLF}"
             content << "        op_edit: \"Editing #{singular_table_name}\"#{CRLF}"
+<<<<<<< HEAD
             content << "        op_edit_multiple: \"Editing #{plural_table_name}\"#{CRLF}"
             content << "        op_copy: \"Creating new #{plural_table_name}\"#{CRLF}"
+=======
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
             if nested?
               content << "        op_index: \"Listing #{plural_table_name} belongings to %{parent} %{name}\"#{CRLF}"
             else

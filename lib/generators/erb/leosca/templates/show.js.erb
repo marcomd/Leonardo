@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 var $dialog = $('<div></div>')
     .html("<%%= escape_javascript(render('show'))%>")
     .dialog({
@@ -7,3 +8,12 @@ var $dialog = $('<div></div>')
         title: '<%%= "#{t('models.<%= singular_table_name %>')} #{@<%= singular_table_name %>.id}"%>'
     });
 $dialog.dialog('open');
+=======
+var $dialog = $('<div></div>')
+    .html("<%%= escape_javascript(render('show'))%>")
+    .dialog({
+        autoOpen: false,
+        title: '<%%= "#{t('models.<%= singular_table_name %>')} #{@<%= singular_table_name %>.try(:name) || @<%= singular_table_name %>.try(:id)}"%>'
+    });
+$dialog.dialog('open');
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798

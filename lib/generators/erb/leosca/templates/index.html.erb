@@ -21,7 +21,11 @@
     <%- case attribute.type -%>
     <%-	when :references, :belongs_to -%>
         <%- unless nested? -%>
+<<<<<<< HEAD
         <%%= f.collection_select :<%= attribute.name %>_id, <%= attribute.name.classify %>.all, :id, :name, {:prompt => true}, {:class => 'autosubmit'} %>
+=======
+        <%%= f.collection_select :<%= attribute.name %>_id, <%= attribute.name.classify %>.all, :id, :name, :prompt => true %>
+>>>>>>> 730e2ecf07a73945550e3f0ea4a337ed132a4798
         <%- end -%>
     <%-	when :boolean -%>
         <%%= radio_button("<%= singular_table_name %>", "<%= attribute.name %>", "1", {:checked => (@<%= singular_table_name %>.<%= attribute.name %>), :class => 'autosubmit'}) %><%%= label_tag "<%= singular_table_name %>_<%= attribute.name %>_1", t(:yes) %><br />
